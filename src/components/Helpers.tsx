@@ -55,6 +55,9 @@ export function moveDown<T>(arr: Array<T>, i: number) {
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 88bb689 (Removed immutability-helper)
  * Push data to arr, creating an array if necessary
  * @param arr
  * @param data
@@ -72,10 +75,13 @@ export function pushArray(arr: object, data: any) {
 }
 
 /**
+<<<<<<< HEAD
  * Assign unique IDs to a node and its children, or an array of nodes by reference
  * @param nodeOrArray An object describing a node or an array of nodes
  */
 =======
+=======
+>>>>>>> 88bb689 (Removed immutability-helper)
  * Assign unique IDs to a node and its children, or an array of nodes by reference
  * @param nodeOrArray An object describing a node or an array of nodes
  */

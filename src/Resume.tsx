@@ -1,5 +1,4 @@
 import * as React from 'react';
-import update from 'immutability-helper';
 import { saveAs } from 'file-saver';
 
 import './css/index.css';
@@ -9,10 +8,14 @@ import 'react-quill/dist/quill.snow.css';
 import loadComponent, { EditorMode } from './components/LoadComponent';
 import { Button, ButtonToolbar, Nav } from 'react-bootstrap';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { deleteAt, moveUp, moveDown, assignIds, deepCopy, pushArray } from './components/Helpers';
 =======
 import { deleteAt, moveUp, moveDown, assignIds, deepCopy } from './components/Helpers';
 >>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
+=======
+import { deleteAt, moveUp, moveDown, assignIds, deepCopy, pushArray } from './components/Helpers';
+>>>>>>> 88bb689 (Removed immutability-helper)
 import { SelectedNodeProps, AddChild } from './components/ResumeComponent';
 import ResumeTemplateProvider from './components/ResumeTemplateProvider';
 import { ResizableSidebarLayout, StaticSidebarLayout, DefaultLayout } from './components/controls/Layouts';
@@ -257,6 +260,7 @@ class Resume extends React.Component<{}, ResumeState> {
      */
     addNestedChild(idx: number, node: object) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         const newChildren = [...this.state.children];
         pushArray(newChildren[idx]['children'], node);
 
@@ -279,6 +283,12 @@ class Resume extends React.Component<{}, ResumeState> {
             }})
         });
 >>>>>>> e511b7e (Fine tuned select/hover logic)
+=======
+        const newChildren = [...this.state.children];
+        pushArray(newChildren[idx]['children'], node);
+
+        this.setState({ children: newChildren });
+>>>>>>> 88bb689 (Removed immutability-helper)
     }
 
     deleteChild(idx: number) {
@@ -289,10 +299,14 @@ class Resume extends React.Component<{}, ResumeState> {
 
     updateData(idx: number, key: string, data: any) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 88bb689 (Removed immutability-helper)
         const newChildren = [...this.state.children];
         newChildren[idx][key] = data;
 
         this.setState({ children: newChildren });
+<<<<<<< HEAD
 =======
         this.setState({
             children: update(this.state.children, {
@@ -302,15 +316,21 @@ class Resume extends React.Component<{}, ResumeState> {
             })
         });
 >>>>>>> e511b7e (Fine tuned select/hover logic)
+=======
+>>>>>>> 88bb689 (Removed immutability-helper)
     }
 
     toggleEdit(idx: number) {
         const currentValue = this.state.children[idx]['isEditing'];
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 88bb689 (Removed immutability-helper)
         const newChildren = [...this.state.children];
         newChildren[idx]['isEditing'] = !currentValue;
 
         this.setState({ children: newChildren });
+<<<<<<< HEAD
 =======
         this.setState({
             children: update(this.state.children, {
@@ -321,6 +341,8 @@ class Resume extends React.Component<{}, ResumeState> {
             })
         });
 >>>>>>> ab14583 (Update Resume.tsx)
+=======
+>>>>>>> 88bb689 (Removed immutability-helper)
     }
 
     // Move the child at idx up one position
