@@ -256,6 +256,7 @@ class Resume extends React.Component<{}, ResumeState> {
      * @param node Grandchild to be added
      */
     addNestedChild(idx: number, node: object) {
+<<<<<<< HEAD
         const newChildren = [...this.state.children];
         pushArray(newChildren[idx]['children'], node);
 
@@ -268,6 +269,16 @@ class Resume extends React.Component<{}, ResumeState> {
         children.push(assignIds(node));
         this.setState({ children: this.state.children });
 >>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
+=======
+        this.setState({
+            children: update(this.state.children, {
+                [idx]: {
+                    children: children =>
+                        update(children || new Array<object>(),
+                            { $push: [ assignIds(node) ] })
+            }})
+        });
+>>>>>>> e511b7e (Fine tuned select/hover logic)
     }
 
     deleteChild(idx: number) {
@@ -277,10 +288,20 @@ class Resume extends React.Component<{}, ResumeState> {
     }
 
     updateData(idx: number, key: string, data: any) {
+<<<<<<< HEAD
         const newChildren = [...this.state.children];
         newChildren[idx][key] = data;
 
         this.setState({ children: newChildren });
+=======
+        this.setState({
+            children: update(this.state.children, {
+                [idx]: {
+                    [key]: { $set: data }
+                }
+            })
+        });
+>>>>>>> e511b7e (Fine tuned select/hover logic)
     }
 
     toggleEdit(idx: number) {
@@ -293,7 +314,10 @@ class Resume extends React.Component<{}, ResumeState> {
 =======
         this.setState({
             children: update(this.state.children, {
-                idx: { isEditing: !currentValue }
+                [idx]: {
+                    isEditing: isEditing =>
+                        update(isEditing || false, { $set: !currentValue })
+                }
             })
         });
 >>>>>>> ab14583 (Update Resume.tsx)
@@ -344,6 +368,7 @@ class Resume extends React.Component<{}, ResumeState> {
         const ids = Array.from(this.state.hovering);
         let depth = 0;
         let cand = "";
+<<<<<<< HEAD
 
         for (let i in ids) {
             const id = ids[i];
@@ -357,6 +382,16 @@ class Resume extends React.Component<{}, ResumeState> {
             if (otherId.search(id) >= 0 && otherId !== id) {
                 return true;
 >>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
+=======
+
+        for (let i in ids) {
+            const id = ids[i];
+            const currentDepth = id.split("-").length;
+
+            if (currentDepth > depth) {
+                depth = currentDepth;
+                cand = id;
+>>>>>>> e511b7e (Fine tuned select/hover logic)
             }
         }
 
@@ -364,9 +399,17 @@ class Resume extends React.Component<{}, ResumeState> {
     }
     
     isSelectBlocked(id: string) {
+<<<<<<< HEAD
         const otherId = this.deepestHoverId();
         return (id !== otherId) &&
             (id.split("-").length < otherId.split("-").length);
+=======
+        return id !== this.deepestHoverId();
+    }
+
+    isHovering(id: string) {
+        return this.state.hovering.has(id);
+>>>>>>> e511b7e (Fine tuned select/hover logic)
     }
 
     isSelected(uuid: string) {

@@ -9,6 +9,13 @@ export default class Paragraph extends ResumeComponent {
     constructor(props) {
         super(props);
 
+<<<<<<< HEAD
+=======
+        this.state = {
+            isSelected: false
+        };
+
+>>>>>>> e511b7e (Fine tuned select/hover logic)
         this.updateDataEvent = this.updateDataEvent.bind(this);
     }
 

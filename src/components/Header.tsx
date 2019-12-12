@@ -11,6 +11,13 @@ export default class Header extends ResumeComponent<HeaderProps> {
     constructor(props: ResumeComponentProps) {
         super(props);
 
+<<<<<<< HEAD
+=======
+        this.state = {
+            isSelected: false
+        }
+
+>>>>>>> e511b7e (Fine tuned select/hover logic)
         this.orientColumn = this.orientColumn.bind(this);
         this.orientRow = this.orientRow.bind(this);
     }

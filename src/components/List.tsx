@@ -74,6 +74,13 @@ export default class List extends ResumeComponent<ListProps> {
     constructor(props) {
         super(props);
 
+<<<<<<< HEAD
+=======
+        this.state = {
+            isSelected: false
+        };
+
+>>>>>>> e511b7e (Fine tuned select/hover logic)
         this.addChild = this.addChild.bind(this);
         this.moveBullets = this.moveBullets.bind(this);
     }

@@ -19,7 +19,10 @@ interface ExtraProps {
     uuid: string;
     isHovering: (id: string) => boolean;
     toggleParentHighlight?: (isHovering: boolean) => void;
+<<<<<<< HEAD
     isSelected: (id: string) => boolean;
+=======
+>>>>>>> e511b7e (Fine tuned select/hover logic)
     isSelectBlocked: (id: string) => boolean;
     deleteChild: () => void;
     mode: EditorMode;

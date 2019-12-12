@@ -22,7 +22,11 @@ export interface ResumeComponentProps {
     isHidden?: boolean;
     isEditing?: boolean
     isHovering: (id: string) => boolean;
+<<<<<<< HEAD
     isSelected: (id: string) => boolean;
+=======
+    isSelected?: boolean;
+>>>>>>> e511b7e (Fine tuned select/hover logic)
     value?: string;
     children?: Array<object>;
 
@@ -41,6 +45,13 @@ export interface ResumeComponentProps {
     toggleEdit?: ((idx: number) => void) | (() => void);
 }
 
+<<<<<<< HEAD
+=======
+export interface ResumeComponentState {
+    isSelected?: boolean;
+}
+
+>>>>>>> e511b7e (Fine tuned select/hover logic)
 export type Action = (() => void);
 export type AddChild = ((node: object) => void);
 export type UpdateChild = ((key: string, data: any) => void);
@@ -94,8 +105,12 @@ export default class ResumeComponent<
     }
 
     get displayBorder(): boolean {
+<<<<<<< HEAD
         const isExcepted = ['FlexibleColumn', 'FlexibleRow'].indexOf(this.props['type']) >= 0;
         return this.isHovering && (!this.isSelectBlocked || isExcepted);
+=======
+        return this.isHovering && (!this.isSelectBlocked || this.props['type'] === 'FlexibleColumn');
+>>>>>>> e511b7e (Fine tuned select/hover logic)
     }
 
     /** Returns true if this node has no children */
@@ -296,7 +311,10 @@ export default class ResumeComponent<
                     mode: this.props.mode,
                     addChild: (this.addNestedChild.bind(this, idx) as (node: object) => void),
                     isHovering: this.props.isHovering,
+<<<<<<< HEAD
                     isSelected: this.props.isSelected,
+=======
+>>>>>>> e511b7e (Fine tuned select/hover logic)
                     isSelectBlocked: this.props.isSelectBlocked,
                     hoverInsert: this.props.hoverInsert,
                     hoverOut: this.props.hoverOut,

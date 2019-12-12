@@ -4,6 +4,17 @@ import { ButtonGroup, Dropdown, DropdownButton, Button } from "react-bootstrap";
 import { DeleteButton, UpButton, DownButton } from "./Buttons";
 
 export class FlexibleColumn extends ResumeComponent {
+<<<<<<< HEAD
+=======
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isSelected: false
+        };
+    }
+
+>>>>>>> e511b7e (Fine tuned select/hover logic)
     /** Get the index of this column */
     get position(): string {
         return ((this.props.id.split('-')).slice(-1))[0];
@@ -32,7 +43,11 @@ export class FlexibleColumn extends ResumeComponent {
 
     /** Returns a "handle" which can be used to select the column itself and not the columns it contains */
     renderGrabHandle() {
+<<<<<<< HEAD
         if (this.displayBorder && !this.isSelected) {
+=======
+        if (this.displayBorder) {
+>>>>>>> e511b7e (Fine tuned select/hover logic)
             return <div className="column-grab-handle-container">
                 <div className="d-flex align-items-center column-grab-handle">
                     Click here to select column
@@ -64,6 +79,13 @@ export default class FlexibleRow extends ResumeComponent {
     constructor(props) {
         super(props);
 
+<<<<<<< HEAD
+=======
+        this.state = {
+            isSelected: false
+        };
+
+>>>>>>> e511b7e (Fine tuned select/hover logic)
         this.addColumn = this.addColumn.bind(this);
     }
 
@@ -90,7 +112,11 @@ export default class FlexibleRow extends ResumeComponent {
 
     /** Returns a "handle" which can be used to select the row itself and not the columns it contains */
     renderGrabHandle() {
+<<<<<<< HEAD
         if (this.displayBorder && !this.isSelected) {
+=======
+        if (this.displayBorder) {
+>>>>>>> e511b7e (Fine tuned select/hover logic)
             return <div className="row-grab-handle-container">
                 <div className="d-flex align-items-center row-grab-handle">
                     Click here to select row
