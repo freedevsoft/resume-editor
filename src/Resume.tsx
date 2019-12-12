@@ -7,7 +7,11 @@ import 'react-quill/dist/quill.snow.css';
 
 import loadComponent, { EditorMode } from './components/LoadComponent';
 import { Button, ButtonToolbar, Nav } from 'react-bootstrap';
+<<<<<<< HEAD
 import { deleteAt, moveUp, moveDown, assignIds, deepCopy, pushArray } from './components/Helpers';
+=======
+import { deleteAt, moveUp, moveDown, assignIds, deepCopy } from './components/Helpers';
+>>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
 import { SelectedNodeProps, AddChild } from './components/ResumeComponent';
 import ResumeTemplateProvider from './components/ResumeTemplateProvider';
 import { ResizableSidebarLayout, StaticSidebarLayout, DefaultLayout } from './components/controls/Layouts';
@@ -226,9 +230,17 @@ class Resume extends React.Component<{}, ResumeState> {
      * @param node Node to be added
      */
     addChild(node: object) {
+<<<<<<< HEAD
         this.setState({
             children: [...this.state.children, assignIds(node)]
         });
+=======
+        // Generate UUIDs
+        node = assignIds(node);
+
+        this.state.children.push(node);
+        this.setState({ children: this.state.children });
+>>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
     }
 
     /**
@@ -240,7 +252,15 @@ class Resume extends React.Component<{}, ResumeState> {
         const newChildren = [...this.state.children];
         pushArray(newChildren[idx]['children'], node);
 
+<<<<<<< HEAD
         this.setState({ children: newChildren });
+=======
+        let children = this.state.children[idx]['children'];
+
+        // Generate UUIDs with assignIds()
+        children.push(assignIds(node));
+        this.setState({ children: this.state.children });
+>>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
     }
 
     deleteChild(idx: number) {
@@ -314,9 +334,14 @@ class Resume extends React.Component<{}, ResumeState> {
             const id = ids[i];
             const currentDepth = id.split("-").length;
 
+<<<<<<< HEAD
             if (currentDepth > depth) {
                 depth = currentDepth;
                 cand = id;
+=======
+            if (otherId.search(id) >= 0 && otherId !== id) {
+                return true;
+>>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
             }
         }
 

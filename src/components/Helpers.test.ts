@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 ﻿import { assignIds, process } from "./Helpers";
+=======
+﻿import { isNullOrUndefined } from "util";
+import { assignIds } from "./Helpers";
+>>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
 
 test('assignIDs Test', () => {
     const node = {
@@ -13,6 +18,7 @@ test('assignIDs Test', () => {
     assignIds(node);
 
     // Test
+<<<<<<< HEAD
     const topId = node['uuid'];
     expect(topId).toBeDefined();
 
@@ -33,4 +39,7 @@ test('process Test', () => {
 
     const textWithMdash = "January 2014 --- December 2016"
     expect(process(textWithMdash)).toBe("January 2014 \u2014 December 2016");
+=======
+    expect(!isNullOrUndefined(node['uuid']));
+>>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
 });

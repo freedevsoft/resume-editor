@@ -54,6 +54,7 @@ export function moveDown<T>(arr: Array<T>, i: number) {
 }
 
 /**
+<<<<<<< HEAD
  * Push data to arr, creating an array if necessary
  * @param arr
  * @param data
@@ -74,6 +75,11 @@ export function pushArray(arr: object, data: any) {
  * Assign unique IDs to a node and its children, or an array of nodes by reference
  * @param nodeOrArray An object describing a node or an array of nodes
  */
+=======
+ * Assign unique IDs to a node and its children, or an array of nodes by reference
+ * @param nodeOrArray An object describing a node or an array of nodes
+ */
+>>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
 export function assignIds(nodeOrArray: object) {
     if (nodeOrArray instanceof Array) {
         assignIdsToNodeArray(nodeOrArray);

@@ -119,10 +119,13 @@ export default class ResumeComponent<
 
     get isPrinting() : boolean {
         return this.props.mode === 'printing';
+<<<<<<< HEAD
     }
 
     get isSelected(): boolean {
         return this.props.isSelected(this.props.uuid);
+=======
+>>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
     }
 
     /**
