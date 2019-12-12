@@ -106,11 +106,16 @@ export default class ResumeComponent<
 
     get displayBorder(): boolean {
 <<<<<<< HEAD
+<<<<<<< HEAD
         const isExcepted = ['FlexibleColumn', 'FlexibleRow'].indexOf(this.props['type']) >= 0;
         return this.isHovering && (!this.isSelectBlocked || isExcepted);
 =======
         return this.isHovering && (!this.isSelectBlocked || this.props['type'] === 'FlexibleColumn');
 >>>>>>> e511b7e (Fine tuned select/hover logic)
+=======
+        const isExcepted = ['FlexibleColumn', 'FlexibleRow'].indexOf(this.props['type']) >= 0;
+        return this.isHovering && (!this.isSelectBlocked || isExcepted);
+>>>>>>> decbbe6 (Update ResumeComponent.tsx)
     }
 
     /** Returns true if this node has no children */
