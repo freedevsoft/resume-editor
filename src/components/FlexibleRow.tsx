@@ -1,8 +1,9 @@
 ﻿import * as React from "react";
-import ResumeComponent from "./ResumeComponent";
+import ResumeNodeBase from "./ResumeComponent";
 import { ButtonGroup, Dropdown, DropdownButton, Button } from "react-bootstrap";
 import { DeleteButton, UpButton, DownButton } from "./controls/Buttons";
 
+<<<<<<< HEAD
 export class FlexibleColumn extends ResumeComponent {
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -18,6 +19,9 @@ export class FlexibleColumn extends ResumeComponent {
 >>>>>>> e511b7e (Fine tuned select/hover logic)
 =======
 >>>>>>> ab2636b (Cleaned up selection logic)
+=======
+export class FlexibleColumn extends ResumeNodeBase {
+>>>>>>> fb61a5c (Changed loadComponent into a render function)
     /** Get the index of this column */
     get position(): number {
         return this.props.id[this.props.id.length - 1];
@@ -82,7 +86,7 @@ export class FlexibleColumn extends ResumeComponent {
     }
 }
 
-export default class FlexibleRow extends ResumeComponent {
+export default class FlexibleRow extends ResumeNodeBase {
     constructor(props) {
         super(props);
 
