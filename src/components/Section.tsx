@@ -18,12 +18,15 @@ export default class Section extends ResumeComponent<SectionProps> {
         super(props);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         this.state = {
             isSelected: false
         };
 
 >>>>>>> e511b7e (Fine tuned select/hover logic)
+=======
+>>>>>>> ab2636b (Cleaned up selection logic)
         this.rotateLeft = this.rotateLeft.bind(this);
         this.rotateRight = this.rotateRight.bind(this);
     }

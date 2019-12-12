@@ -5,6 +5,7 @@ import { DeleteButton, UpButton, DownButton } from "./Buttons";
 
 export class FlexibleColumn extends ResumeComponent {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     constructor(props) {
         super(props);
@@ -15,6 +16,8 @@ export class FlexibleColumn extends ResumeComponent {
     }
 
 >>>>>>> e511b7e (Fine tuned select/hover logic)
+=======
+>>>>>>> ab2636b (Cleaned up selection logic)
     /** Get the index of this column */
     get position(): string {
         return ((this.props.id.split('-')).slice(-1))[0];
@@ -80,12 +83,15 @@ export default class FlexibleRow extends ResumeComponent {
         super(props);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         this.state = {
             isSelected: false
         };
 
 >>>>>>> e511b7e (Fine tuned select/hover logic)
+=======
+>>>>>>> ab2636b (Cleaned up selection logic)
         this.addColumn = this.addColumn.bind(this);
     }
 

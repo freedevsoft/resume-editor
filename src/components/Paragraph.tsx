@@ -10,12 +10,15 @@ export default class Paragraph extends ResumeComponent {
         super(props);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         this.state = {
             isSelected: false
         };
 
 >>>>>>> e511b7e (Fine tuned select/hover logic)
+=======
+>>>>>>> ab2636b (Cleaned up selection logic)
         this.updateDataEvent = this.updateDataEvent.bind(this);
     }
 

@@ -23,10 +23,14 @@ export interface ResumeComponentProps {
     isEditing?: boolean
     isHovering: (id: string) => boolean;
 <<<<<<< HEAD
+<<<<<<< HEAD
     isSelected: (id: string) => boolean;
 =======
     isSelected?: boolean;
 >>>>>>> e511b7e (Fine tuned select/hover logic)
+=======
+    isSelected: (id: string) => boolean;
+>>>>>>> ab2636b (Cleaned up selection logic)
     value?: string;
     children?: Array<object>;
 
@@ -46,12 +50,15 @@ export interface ResumeComponentProps {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 export interface ResumeComponentState {
     isSelected?: boolean;
 }
 
 >>>>>>> e511b7e (Fine tuned select/hover logic)
+=======
+>>>>>>> ab2636b (Cleaned up selection logic)
 export type Action = (() => void);
 export type AddChild = ((node: object) => void);
 export type UpdateChild = ((key: string, data: any) => void);
@@ -146,6 +153,10 @@ export default class ResumeComponent<
         return this.props.isSelected(this.props.uuid);
 =======
 >>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
+    }
+
+    get isSelected(): boolean {
+        return this.props.isSelected(this.props.uuid);
     }
 
     /**
@@ -317,9 +328,13 @@ export default class ResumeComponent<
                     addChild: (this.addNestedChild.bind(this, idx) as (node: object) => void),
                     isHovering: this.props.isHovering,
 <<<<<<< HEAD
+<<<<<<< HEAD
                     isSelected: this.props.isSelected,
 =======
 >>>>>>> e511b7e (Fine tuned select/hover logic)
+=======
+                    isSelected: this.props.isSelected,
+>>>>>>> ab2636b (Cleaned up selection logic)
                     isSelectBlocked: this.props.isSelectBlocked,
                     hoverInsert: this.props.hoverInsert,
                     hoverOut: this.props.hoverOut,

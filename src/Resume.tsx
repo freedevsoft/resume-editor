@@ -407,11 +407,20 @@ class Resume extends React.Component<{}, ResumeState> {
         return id !== this.deepestHoverId();
     }
 
+    isSelected(uuid: string) {
+        if (this.state.selectedNode) {
+            return uuid === this.state.selectedNode.uuid;
+        }
+
+        return false;
+    }
+
     isHovering(id: string) {
         return this.state.hovering.has(id);
 >>>>>>> e511b7e (Fine tuned select/hover logic)
     }
 
+<<<<<<< HEAD
     isSelected(uuid: string) {
         if (this.state.selectedNode) {
             return uuid === this.state.selectedNode.uuid;
@@ -424,6 +433,8 @@ class Resume extends React.Component<{}, ResumeState> {
         return this.state.hovering.has(id);
     }
 
+=======
+>>>>>>> ab2636b (Cleaned up selection logic)
     unselect() {
         this.setState({ selectedNode: undefined });
     }
