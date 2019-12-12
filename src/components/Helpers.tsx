@@ -1,5 +1,4 @@
 ﻿import uuid from 'uuid/v4';
-import { isNullOrUndefined, isUndefined } from 'util';
 
 /**
  * Return a copy of an array with the i-th element removed
@@ -70,6 +69,7 @@ export function arraysEqual<T>(left: Array<T>, right: Array<T>) {
 /**
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 88bb689 (Removed immutability-helper)
  * Push data to arr, creating an array if necessary
@@ -90,6 +90,8 @@ export function pushArray(arr: object, data: any) {
 
 /**
 <<<<<<< HEAD
+=======
+>>>>>>> dfea35f (Simplified loadComponent())
  * Assign unique IDs to a node and its children, or an array of nodes by reference
  * @param nodeOrArray An object describing a node or an array of nodes
  */
