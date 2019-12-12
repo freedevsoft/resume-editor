@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ﻿import { assignIds, process } from "./Helpers";
 =======
 ﻿import { isNullOrUndefined } from "util";
@@ -8,6 +9,9 @@ import { assignIds } from "./Helpers";
 =======
 ﻿import { assignIds } from "./Helpers";
 >>>>>>> 82ce000 (Update Helpers.test.ts)
+=======
+﻿import { assignIds, process } from "./Helpers";
+>>>>>>> bf506ab (Fixed issue with process())
 
 test('assignIDs Test', () => {
     const node = {
@@ -39,6 +43,9 @@ test('assignIDs Test', () => {
 
     expect(node.children[0]['uuid']).not.toBe(node.children[1]['uuid']);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bf506ab (Fixed issue with process())
 });
 
 test('process Test', () => {
@@ -47,9 +54,12 @@ test('process Test', () => {
 
     const textWithMdash = "January 2014 --- December 2016"
     expect(process(textWithMdash)).toBe("January 2014 \u2014 December 2016");
+<<<<<<< HEAD
 =======
     expect(!isNullOrUndefined(node['uuid']));
 >>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
 =======
 >>>>>>> 82ce000 (Update Helpers.test.ts)
+=======
+>>>>>>> bf506ab (Fixed issue with process())
 });
