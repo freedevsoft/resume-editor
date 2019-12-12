@@ -5,7 +5,7 @@ import './css/index.css';
 import './scss/custom.scss';
 import 'react-quill/dist/quill.snow.css';
 
-import { EditorMode } from './components/LoadComponent';
+import ResumeComponent, { EditorMode } from './components/ResumeComponent';
 import { Button, ButtonToolbar, Nav } from 'react-bootstrap';
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -23,9 +23,13 @@ import { SelectedNodeProps, AddChild } from './components/ResumeComponent';
 import { deleteAt, moveUp, moveDown, assignIds, deepCopy, pushArray, arraysEqual } from './components/Helpers';
 =======
 import { deleteAt, moveUp, moveDown, assignIds, deepCopy, arraysEqual } from './components/Helpers';
+<<<<<<< HEAD
 >>>>>>> dfea35f (Simplified loadComponent())
 import { SelectedNodeProps, AddChild, Action } from './components/ResumeComponent';
 >>>>>>> 759ed46 (Added HoverTracker)
+=======
+import { SelectedNodeProps, AddChild, Action } from './components/ResumeNodeBase';
+>>>>>>> cfdfcd6 (Rename)
 import ResumeTemplateProvider from './components/ResumeTemplateProvider';
 import { ResizableSidebarLayout, StaticSidebarLayout, DefaultLayout } from './components/controls/Layouts';
 import Landing from './components/help/Landing';
@@ -36,7 +40,6 @@ import StyleEditor from './components/controls/StyleEditor';
 import Help from './components/help/Help';
 import { isNullOrUndefined } from 'util';
 import HoverTracker, { IdType } from './components/utility/HoverTracker';
-import ResumeComponent from './components/LoadComponent';
 
 class Resume extends React.Component<{}, ResumeState> {
     hovering: HoverTracker;

@@ -1,35 +1,28 @@
 ﻿import * as React from "react";
+import { EditorMode } from "./ResumeComponent";
+import { deleteAt, moveUp, moveDown, deepCopy, assignIds } from "./Helpers";
+import { IdType } from "./utility/HoverTracker";
+import ResumeComponent from "./ResumeComponent";
 
-<<<<<<< HEAD
+export interface BasicNodeProps {
+    id: IdType;   // Hierarchical ID based on the node's position in the resume; subject to change
+    uuid: string; // Unique ID that never changes
+
+    addChild?: AddChild;
+    deleteChild: Action;
+    toggleEdit?: Action;
+}
+
+export interface SelectedNodeProps extends BasicNodeProps {
+    getData: () => object;
+}
+
 /** Represents resume prop properties and methods passed
  *  from the top down
  * */
 export interface ResumePassProps {
     uuid: string;
     mode: EditorMode;
-<<<<<<< HEAD
-    isFirst: boolean;
-    isLast: boolean;
-
-    isHidden?: boolean;
-    isEditing?: boolean
-<<<<<<< HEAD
-    isHovering: (id: string) => boolean;
-<<<<<<< HEAD
-<<<<<<< HEAD
-    isSelected: (id: string) => boolean;
-=======
-    isSelected?: boolean;
->>>>>>> e511b7e (Fine tuned select/hover logic)
-=======
-    isSelected: (id: string) => boolean;
->>>>>>> ab2636b (Cleaned up selection logic)
-=======
->>>>>>> 759ed46 (Added HoverTracker)
-    value?: string;
-    children?: Array<object>;
-=======
->>>>>>> ce7f5fa (Simplified ResumeComponent props)
 
     deleteChild: Action;
     hoverOver: (id: IdType) => void;
@@ -47,47 +40,17 @@ export interface ResumePassProps {
     toggleEdit?: Action;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-export interface ResumeComponentState {
-    isSelected?: boolean;
-}
-
->>>>>>> e511b7e (Fine tuned select/hover logic)
-=======
->>>>>>> ab2636b (Cleaned up selection logic)
-=======
 export interface ResumeNodeProps extends BasicNodeProps, ResumePassProps {
     isFirst: boolean;
     isLast: boolean;
-=======
-import FlexibleRow, { FlexibleColumn } from "./FlexibleRow";
-import Section, { SectionProps } from "./Section";
-import Entry, { EntryProps } from "./Entry";
-import List, { ListItem, DescriptionList, DescriptionListItem } from "./List";
-import Paragraph from "./Paragraph";
-import Header from "./Header";
-import { ResumeNodeProps, ResumePassProps } from "./ResumeNodeBase";
-import { IdType } from "./utility/HoverTracker";
->>>>>>> cfdfcd6 (Rename)
 
-export type EditorMode = 'normal'
-    | 'landing'
-    | 'help'
-    | 'editingStyle'
-    | 'changingTemplate'
-    | 'printing';
-
-interface ResumeComponentProps extends ResumePassProps {
-    index: number;       // The n-th index of this node relative to its parent
-    numChildren: number; // How many total siblings this node has plus itself
-    parentId?: IdType;   // The id of the parent node
+    // TODO: Might wanna rename this property
+    children?: Array<object>;
+    isHidden?: boolean;
+    isEditing?: boolean
+    value?: string;
 }
 
-<<<<<<< HEAD
->>>>>>> ce7f5fa (Simplified ResumeComponent props)
 export type Action = (() => void);
 export type AddChild = ((node: object) => void);
 export type UpdateChild = ((key: string, data: any) => void);
@@ -137,17 +100,8 @@ export default class ResumeNodeBase<P
     }
 
     get displayBorder(): boolean {
-<<<<<<< HEAD
-<<<<<<< HEAD
         const isExcepted = ['FlexibleColumn', 'FlexibleRow'].indexOf(this.props['type']) >= 0;
         return this.isHovering && (!this.isSelectBlocked || isExcepted);
-=======
-        return this.isHovering && (!this.isSelectBlocked || this.props['type'] === 'FlexibleColumn');
->>>>>>> e511b7e (Fine tuned select/hover logic)
-=======
-        const isExcepted = ['FlexibleColumn', 'FlexibleRow'].indexOf(this.props['type']) >= 0;
-        return this.isHovering && (!this.isSelectBlocked || isExcepted);
->>>>>>> decbbe6 (Update ResumeComponent.tsx)
     }
 
     /** Returns true if this node has no children */
@@ -171,13 +125,6 @@ export default class ResumeNodeBase<P
 
     get isPrinting() : boolean {
         return this.props.mode === 'printing';
-<<<<<<< HEAD
-    }
-
-    get isSelected(): boolean {
-        return this.props.isSelected(this.props.uuid);
-=======
->>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
     }
 
     get isSelected(): boolean {
@@ -351,94 +298,6 @@ export default class ResumeNodeBase<P
         this.updateData(key, event.target.value);
     }
 
-<<<<<<< HEAD
-    childMapper(elem: object, idx: number, arr: object[]) {
-        const uniqueId = elem['uuid'];
-
-<<<<<<< HEAD
-        return <React.Fragment key={uniqueId}>
-<<<<<<< HEAD
-            {loadComponent(elem, idx, arr.length,
-                {
-                    uuid: uniqueId,
-                    mode: this.props.mode,
-                    addChild: (this.addNestedChild.bind(this, idx) as (node: object) => void),
-                    isHovering: this.props.isHovering,
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    isSelected: this.props.isSelected,
-=======
->>>>>>> e511b7e (Fine tuned select/hover logic)
-=======
-                    isSelected: this.props.isSelected,
->>>>>>> ab2636b (Cleaned up selection logic)
-                    isSelectBlocked: this.props.isSelectBlocked,
-                    hoverInsert: this.props.hoverInsert,
-                    hoverOut: this.props.hoverOut,
-                    moveDown: (this.moveNestedChildDown.bind(this, idx) as Action),
-                    moveUp: (this.moveNestedChildUp.bind(this, idx) as Action),
-                    deleteChild: (this.deleteNestedChild.bind(this, idx) as Action),
-                    toggleEdit: (this.toggleNestedEdit.bind(this, idx) as () => void),
-                    updateData: (this.updateNestedData.bind(this, idx) as (key: string, data: any) => void),
-                    unselect: this.props.unselect,
-                    updateSelected: this.props.updateSelected
-                },
-                this.props.id)}
-=======
-            {loadComponent({
-                ...elem,
-                uuid: uniqueId,
-                mode: this.props.mode,
-                addChild: (this.addNestedChild.bind(this, idx) as (node: object) => void),
-                isHovering: this.props.isHovering,
-                isSelected: this.props.isSelected,
-                isSelectBlocked: this.props.isSelectBlocked,
-                hoverInsert: this.props.hoverInsert,
-                hoverOut: this.props.hoverOut,
-                moveDown: (this.moveNestedChildDown.bind(this, idx) as Action),
-                moveUp: (this.moveNestedChildUp.bind(this, idx) as Action),
-                deleteChild: (this.deleteNestedChild.bind(this, idx) as Action),
-                toggleEdit: (this.toggleNestedEdit.bind(this, idx) as () => void),
-                updateData: (this.updateNestedData.bind(this, idx) as (key: string, data: any) => void),
-                unselect: this.props.unselect,
-                updateSelected: this.props.updateSelected
-            },
-            idx, arr.length,
-            this.props.id)}
->>>>>>> dfea35f (Simplified loadComponent())
-        </React.Fragment>
-=======
-        const props = {
-            ...elem,
-            uuid: uniqueId,
-            mode: this.props.mode,
-            addChild: (this.addNestedChild.bind(this, idx) as (node: object) => void),
-            isHovering: this.props.isHovering,
-            isSelected: this.props.isSelected,
-            isSelectBlocked: this.props.isSelectBlocked,
-            hoverInsert: this.props.hoverInsert,
-            hoverOut: this.props.hoverOut,
-            moveDown: (this.moveNestedChildDown.bind(this, idx) as Action),
-            moveUp: (this.moveNestedChildUp.bind(this, idx) as Action),
-            deleteChild: (this.deleteNestedChild.bind(this, idx) as Action),
-            toggleEdit: (this.toggleNestedEdit.bind(this, idx) as () => void),
-            updateData: (this.updateNestedData.bind(this, idx) as (key: string, data: any) => void),
-            unselect: this.props.unselect,
-            updateSelected: this.props.updateSelected,
-
-            index: idx,
-            numChildren: arr.length,
-
-            // Crucial for generating IDs so hover/select works properly
-            parentId: this.props.id
-        };
-
-        return <ResumeComponent key={uniqueId} {...props} />
->>>>>>> fb61a5c (Changed loadComponent into a render function)
-    }
-
-=======
->>>>>>> ce7f5fa (Simplified ResumeComponent props)
     renderChildren() {
         const children = this.props.children as Array<object>;
         if (children) {
@@ -516,46 +375,5 @@ export default class ResumeNodeBase<P
         }
 
         return <></>
-=======
-/**
- * Load a resume node from a JavaScript object
- */
-export default function ResumeComponent(props: ResumeComponentProps) {
-    const parentId = props.parentId;
-    const index = props.index;
-
-    let newProps = {
-        ...props,
-
-        // Generate unique IDs for component
-        id: parentId ? [...parentId, index] : [index],
-        isFirst: (index === 0),
-        isLast: (index === props.numChildren - 1)
-    } as ResumeNodeProps;
-    
-    switch (props['type']) {
-        case 'DescriptionList':
-            return <DescriptionList {...newProps} />;
-        case 'DescriptionListItem':
-            return <DescriptionListItem {...newProps} />;
-        case 'FlexibleColumn':
-            return <FlexibleColumn {...newProps} />;
-        case 'FlexibleRow':
-            return <FlexibleRow {...newProps} />;
-        case 'Header':
-            return <Header {...newProps} />
-        case 'Section':
-            return <Section {...newProps as SectionProps} />;
-        case 'Entry':
-            return <Entry {...newProps as EntryProps} />;
-        case 'List':
-            return <List {...newProps} />;
-        case 'ListItem':
-            return <ListItem {...newProps} />;
-        case 'Paragraph':
-            return <Paragraph {...newProps} />;
-        default:
-            return <React.Fragment></React.Fragment>
->>>>>>> cfdfcd6 (Rename)
     }
 }
