@@ -422,11 +422,17 @@ class Resume extends React.Component<{}, ResumeState> {
     
     isSelectBlocked(id: string) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         const otherId = this.deepestHoverId();
         return (id !== otherId) &&
             (id.split("-").length < otherId.split("-").length);
 =======
         return id !== this.deepestHoverId();
+=======
+        const otherId = this.deepestHoverId();
+        return (id !== otherId) &&
+            (id.split("-").length < otherId.split("-").length);
+>>>>>>> 5956af1 (Update Resume.tsx)
     }
 
     isSelected(uuid: string) {
