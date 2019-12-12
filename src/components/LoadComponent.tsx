@@ -7,6 +7,7 @@ import List, { ListItem, DescriptionList, DescriptionListItem } from "./List";
 import Paragraph from "./Paragraph";
 import Header from "./Header";
 import { ResumeComponentProps, SelectedNodeProps, Action } from "./ResumeComponent";
+import { IdType } from "./utility/HoverTracker";
 
 export type EditorMode = 'normal'
     | 'landing'
@@ -17,25 +18,29 @@ export type EditorMode = 'normal'
 
 interface ExtraProps {
     uuid: string;
-    isHovering: (id: string) => boolean;
+    isHovering: (id: IdType) => boolean;
     toggleParentHighlight?: (isHovering: boolean) => void;
 <<<<<<< HEAD
 <<<<<<< HEAD
     isSelected: (id: string) => boolean;
+<<<<<<< HEAD
 =======
 >>>>>>> e511b7e (Fine tuned select/hover logic)
 =======
     isSelected: (id: string) => boolean;
 >>>>>>> ab2636b (Cleaned up selection logic)
     isSelectBlocked: (id: string) => boolean;
+=======
+    isSelectBlocked: (id: IdType) => boolean;
+>>>>>>> 759ed46 (Added HoverTracker)
     deleteChild: () => void;
     mode: EditorMode;
     unselect: () => void;
     updateSelected: (data?: SelectedNodeProps) => void;
 
     addChild?: (node: object) => void;
-    hoverInsert?: (id: string) => void;
-    hoverOut?: (id: string) => void;
+    hoverInsert?: (id: IdType) => void;
+    hoverOut?: (id: IdType) => void;
     moveUp?: Action;
     moveDown?: Action;
     toggleEdit?: Action;
@@ -48,10 +53,10 @@ interface ExtraProps {
  * @param index       The n-th index of this node relative to its parent
  * @param numChildren How many total siblings this node has plus itself
  * @param extraProps  Props passed down from parent (such as functions)
- * @param parentIndex The n-th index of this node's parent relative to its parent
+ * @param parentId    The id of the parent node
  */
 export default function loadComponent(data: object,
-    index: number, numChildren: number, extraProps?: ExtraProps, parentIndex?: string) {
+    index: number, numChildren: number, extraProps?: ExtraProps, parentId?: IdType) {
     // Load prop data
     let propsDraft = {};
     for (let key in data) {
@@ -61,7 +66,7 @@ export default function loadComponent(data: object,
     }
 
     // Generate unique IDs for component
-    propsDraft['id'] = parentIndex ? parentIndex + '-' + index.toString() : index.toString();
+    propsDraft['id'] = parentId ? [...parentId, index] : [index];
     propsDraft['isFirst'] = (index === 0);
     propsDraft['isLast'] = (index === numChildren - 1);
 

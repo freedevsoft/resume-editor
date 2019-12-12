@@ -135,7 +135,7 @@ export default class List extends ResumeComponent<ListProps> {
     }
 
     renderContextMenu() {
-        return <Menu id={this.props.id}>
+        return <Menu id={this.props.uuid}>
             <Item onClick={this.addChild}>Add Bullet</Item>
             <Item onClick={this.moveBullets}>{this.moveText}</Item>
             <Item onClick={this.toggleHidden}>{this.hideText}</Item>
@@ -156,7 +156,7 @@ export default class List extends ResumeComponent<ListProps> {
     
     render() {
         return <React.Fragment>
-            <MenuProvider id={this.props.id}>
+            <MenuProvider id={this.props.uuid}>
                 {this.renderList()}
             </MenuProvider>
             {this.renderContextMenu()}
