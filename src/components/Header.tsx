@@ -75,7 +75,7 @@ export default class Header extends ResumeNodeBase<HeaderProps> {
 
         return <header className={this.className}>
             {this.renderEditingMenu()}
-            <h1 {...this.getSelectTriggerProps()}>
+            <h1 {...this.selectTriggerProps}>
                 {value}
             </h1>
             {this.renderChildren()}

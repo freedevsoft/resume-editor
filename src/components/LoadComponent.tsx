@@ -6,7 +6,7 @@ import Entry, { EntryProps } from "./Entry";
 import List, { ListItem, DescriptionList, DescriptionListItem } from "./List";
 import Paragraph from "./Paragraph";
 import Header from "./Header";
-import { ResumeNodeProps, SelectedNodeProps, Action } from "./ResumeComponent";
+import { ResumeNodeProps, ResumePassProps } from "./ResumeComponent";
 import { IdType } from "./utility/HoverTracker";
 
 export type EditorMode = 'normal'
@@ -16,6 +16,7 @@ export type EditorMode = 'normal'
     | 'changingTemplate'
     | 'printing';
 
+<<<<<<< HEAD
 interface ExtraProps {
     uuid: string;
     isHovering: (id: IdType) => boolean;
@@ -50,16 +51,18 @@ interface ExtraProps {
     index: number;
     numChildren: number;
     parentId?: IdType;
+=======
+interface ResumeComponentProps extends ResumePassProps {
+    index: number;       // The n-th index of this node relative to its parent
+    numChildren: number; // How many total siblings this node has plus itself
+    parentId?: IdType;   // The id of the parent node
+>>>>>>> ce7f5fa (Simplified ResumeComponent props)
 }
 
 /**
  * Load a resume node from a JavaScript object
- * @param data
- * @param index       The n-th index of this node relative to its parent
- * @param numChildren How many total siblings this node has plus itself
- * @param parentId    The id of the parent node
  */
-export default function ResumeComponent(props: ExtraProps) {
+export default function ResumeComponent(props: ResumeComponentProps) {
     const parentId = props.parentId;
     const index = props.index;
 

@@ -1,23 +1,29 @@
 ﻿import * as React from "react";
-import loadComponent, { EditorMode } from "./LoadComponent";
+import { EditorMode } from "./LoadComponent";
 import { deleteAt, moveUp, moveDown, deepCopy, assignIds } from "./Helpers";
 import { IdType } from "./utility/HoverTracker";
 import ResumeComponent from "./LoadComponent";
 
-export interface SelectedNodeProps {
-    id: IdType;
-    uuid: string;
-    addChild?: AddChild;
-    deleteChild: Action;
-    getData: () => object;
-    toggleEdit?: Action;
-}
-
-export interface ResumeNodeProps {
+export interface BasicNodeProps {
     id: IdType;   // Hierarchical ID based on the node's position in the resume; subject to change
     uuid: string; // Unique ID that never changes
 
+    addChild?: AddChild;
+    deleteChild: Action;
+    toggleEdit?: Action;
+}
+
+export interface SelectedNodeProps extends BasicNodeProps {
+    getData: () => object;
+}
+
+/** Represents resume prop properties and methods passed
+ *  from the top down
+ * */
+export interface ResumePassProps {
+    uuid: string;
     mode: EditorMode;
+<<<<<<< HEAD
     isFirst: boolean;
     isLast: boolean;
 
@@ -38,24 +44,26 @@ export interface ResumeNodeProps {
 >>>>>>> 759ed46 (Added HoverTracker)
     value?: string;
     children?: Array<object>;
+=======
+>>>>>>> ce7f5fa (Simplified ResumeComponent props)
 
+    deleteChild: Action;
+    hoverOver: (id: IdType) => void;
+    hoverOut: (id: IdType) => void;
     isHovering: (id: IdType) => boolean;
     isSelected: (id: string) => boolean;
-    hoverInsert: (id: IdType) => void;
-    hoverOut: (id: IdType) => void;
     isSelectBlocked: (id: IdType) => boolean;
-    deleteChild: Action;
-    toggleParentHighlight: (isHovering: boolean) => void;
     moveUp: Action;
     moveDown: Action;
     unselect: Action;
     updateData: (key: string, data: any) => void;
     updateSelected: (data?: SelectedNodeProps) => void;
 
-    addChild?: (node: object) => void;
+    addChild?: AddChild;
     toggleEdit?: Action;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -66,6 +74,19 @@ export interface ResumeComponentState {
 >>>>>>> e511b7e (Fine tuned select/hover logic)
 =======
 >>>>>>> ab2636b (Cleaned up selection logic)
+=======
+export interface ResumeNodeProps extends BasicNodeProps, ResumePassProps {
+    isFirst: boolean;
+    isLast: boolean;
+
+    // TODO: Might wanna rename this property
+    children?: Array<object>;
+    isHidden?: boolean;
+    isEditing?: boolean
+    value?: string;
+}
+
+>>>>>>> ce7f5fa (Simplified ResumeComponent props)
 export type Action = (() => void);
 export type AddChild = ((node: object) => void);
 export type UpdateChild = ((key: string, data: any) => void);
@@ -82,8 +103,6 @@ export default class ResumeNodeBase<P
         this.addParagraph = this.addParagraph.bind(this);
         this.addSection = this.addSection.bind(this);
 
-        this.childMapper = this.childMapper.bind(this);
-
         this.addChild = this.addChild.bind(this);
         this.getData = this.getData.bind(this);
         this.updateDataEvent = this.updateDataEvent.bind(this);
@@ -94,7 +113,6 @@ export default class ResumeNodeBase<P
         this.toggleHidden = this.toggleHidden.bind(this);
         this.updateNestedData = this.updateNestedData.bind(this);
         this.setSelected = this.setSelected.bind(this);
-        this.getSelectTriggerProps = this.getSelectTriggerProps.bind(this);
     }
 
     /** Get the class name for the main container */
@@ -171,6 +189,19 @@ export default class ResumeNodeBase<P
      */
     get isSelectBlocked(): boolean {
         return this.props.isSelectBlocked(this.props.id);
+    }
+
+    /** Returns hover/select trigger props */
+    get selectTriggerProps() {
+        if (!this.isEditable) {
+            return {};
+        }
+
+        return {
+            onClick: this.setSelected,
+            onMouseEnter: () => this.props.hoverOver(this.props.id),
+            onMouseLeave: () => this.props.hoverOut(this.props.id)
+        };
     }
 
     componentWillUnmount() {
@@ -255,10 +286,10 @@ export default class ResumeNodeBase<P
      * @param gchildIdx Index of the grandchild to be deleted
      */
     deleteNestedChild(idx: number) {
-        let replChildren = this.props.children;
-        if (replChildren as Array<object>) {
+        let replChildren = this.props.children as Array<object>;
+        if (replChildren) {
             // Replace node's children with new list of children that excludes deleted node
-            this.updateData("children", deleteAt((replChildren as Array<object>), idx));
+            this.updateData("children", deleteAt(replChildren, idx));
         }
     }
 
@@ -312,16 +343,14 @@ export default class ResumeNodeBase<P
     }
 
     updateData(key: string, data: string | boolean | object | Array<any>) {
-        const updater = this.props.updateData as ((key: string, data: any) => void);
-        if (updater) {
-            updater(key, data);
-        }
+        this.props.updateData(key, data);
     }
 
     updateDataEvent(key: string, event: any) {
         this.updateData(key, event.target.value);
     }
 
+<<<<<<< HEAD
     childMapper(elem: object, idx: number, arr: object[]) {
         const uniqueId = elem['uuid'];
 
@@ -407,9 +436,40 @@ export default class ResumeNodeBase<P
 >>>>>>> fb61a5c (Changed loadComponent into a render function)
     }
 
+=======
+>>>>>>> ce7f5fa (Simplified ResumeComponent props)
     renderChildren() {
-        if (this.props.children as Array<object>) {
-            return (this.props.children as Array<object>).map(this.childMapper)
+        const children = this.props.children as Array<object>;
+        if (children) {
+            return children.map((elem: object, idx: number, arr: object[]) => {
+                const uniqueId = elem['uuid'];
+                const props = {
+                    ...elem,
+                    uuid: uniqueId,
+                    mode: this.props.mode,
+                    addChild: this.addNestedChild.bind(this, idx),
+                    isHovering: this.props.isHovering,
+                    isSelected: this.props.isSelected,
+                    isSelectBlocked: this.props.isSelectBlocked,
+                    hoverOver: this.props.hoverOver,
+                    hoverOut: this.props.hoverOut,
+                    moveDown: this.moveNestedChildDown.bind(this, idx),
+                    moveUp: this.moveNestedChildUp.bind(this, idx),
+                    deleteChild: this.deleteNestedChild.bind(this, idx),
+                    toggleEdit: this.toggleNestedEdit.bind(this, idx),
+                    updateData: this.updateNestedData.bind(this, idx),
+                    unselect: this.props.unselect,
+                    updateSelected: this.props.updateSelected,
+
+                    index: idx,
+                    numChildren: arr.length,
+
+                    // Crucial for generating IDs so hover/select works properly
+                    parentId: this.props.id
+                };
+
+                return <ResumeComponent key={uniqueId} {...props} />
+            })
         }
 
         return <React.Fragment />
@@ -432,31 +492,11 @@ export default class ResumeNodeBase<P
                 id: this.props.id,
                 uuid: this.props.uuid,
                 addChild: this.addChild,
-                deleteChild: this.props.deleteChild as Action,
+                deleteChild: this.props.deleteChild,
                 getData: this.getData,
                 toggleEdit: this.props.toggleEdit as Action
             });
         }
-    }
-
-    getSelectTriggerProps() {
-        if (!this.isEditable) {
-            return {};
-        }
-
-        return {
-            onClick: this.setSelected,
-
-            // Hover over
-            onMouseEnter: () => {
-                (this.props.hoverInsert as (id: IdType) => void)(this.props.id);
-            },
-
-            // Hover out
-            onMouseLeave: () => {
-                (this.props.hoverOut as (id: IdType) => void)(this.props.id);
-            }
-        };
     }
 
     // Get the buttons for editing a menu

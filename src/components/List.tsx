@@ -148,7 +148,7 @@ export default class List extends ResumeNodeBase<ListProps> {
             return <></>
         }
 
-        return <ul className={this.className} {...this.getSelectTriggerProps()}>
+        return <ul className={this.className} {...this.selectTriggerProps}>
             {this.renderEditingMenu()}
             {this.renderChildren()}
         </ul>
@@ -210,7 +210,7 @@ export class DescriptionList extends List {
     }
 
     renderList() {
-        return <dl className={this.className} {...this.getSelectTriggerProps()}>
+        return <dl className={this.className} {...this.selectTriggerProps}>
             {this.renderEditingMenu()}
             {this.renderChildren()}
         </dl>
