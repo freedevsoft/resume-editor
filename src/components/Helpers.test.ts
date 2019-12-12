@@ -1,9 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 ﻿import { assignIds, process } from "./Helpers";
 =======
 ﻿import { isNullOrUndefined } from "util";
 import { assignIds } from "./Helpers";
 >>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
+=======
+﻿import { assignIds } from "./Helpers";
+>>>>>>> 82ce000 (Update Helpers.test.ts)
 
 test('assignIDs Test', () => {
     const node = {
@@ -19,6 +23,9 @@ test('assignIDs Test', () => {
 
     // Test
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 82ce000 (Update Helpers.test.ts)
     const topId = node['uuid'];
     expect(topId).toBeDefined();
 
@@ -31,6 +38,7 @@ test('assignIDs Test', () => {
     );
 
     expect(node.children[0]['uuid']).not.toBe(node.children[1]['uuid']);
+<<<<<<< HEAD
 });
 
 test('process Test', () => {
@@ -42,4 +50,6 @@ test('process Test', () => {
 =======
     expect(!isNullOrUndefined(node['uuid']));
 >>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
+=======
+>>>>>>> 82ce000 (Update Helpers.test.ts)
 });
