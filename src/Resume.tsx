@@ -231,6 +231,7 @@ class Resume extends React.Component<{}, ResumeState> {
      */
     addChild(node: object) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         this.setState({
             children: [...this.state.children, assignIds(node)]
         });
@@ -241,6 +242,11 @@ class Resume extends React.Component<{}, ResumeState> {
         this.state.children.push(node);
         this.setState({ children: this.state.children });
 >>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
+=======
+        this.setState({
+            children: [...this.state.children, assignIds(node)]
+        });
+>>>>>>> d13d2e6 (Avoid mutating state directly no. 1)
     }
 
     /**
