@@ -8,6 +8,8 @@ interface DescriptionItemProps extends ResumeNodeProps {
 }
 
 export class DescriptionListItem extends ResumeNodeBase<DescriptionItemProps> {
+    static readonly type = 'DescriptionListItem';
+
     get className() {
         return super.className + " resume-definition";
     }
@@ -36,6 +38,7 @@ export class DescriptionListItem extends ResumeNodeBase<DescriptionItemProps> {
     }
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /** Represents a list component */
 export default class List extends ResumeNodeBase<ListProps> {
@@ -71,6 +74,11 @@ export default class List extends ResumeNodeBase<ListProps> {
             });
 =======
 export class DescriptionList extends ResumeNodeBase {
+=======
+export default class DescriptionList extends ResumeNodeBase {
+    static readonly type = 'DescriptionList';
+
+>>>>>>> aa40481 (Removed usage of Function.name which caused issues when minified)
     /** Returns a "handle" which can be used to select the column itself and not the columns it contains */
     renderGrabHandle() {
         if (this.isHovering && !this.isSelected) {

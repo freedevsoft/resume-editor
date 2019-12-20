@@ -69,7 +69,7 @@ import FlexibleRow, { FlexibleColumn } from "./FlexibleRow";
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
 import Section, { SectionProps } from "./Section";
 import Entry, { BasicEntryProps } from "./Entry";
-import { DescriptionList, DescriptionListItem } from "./List";
+import DescriptionList, { DescriptionListItem } from "./List";
 import RichText from "./RichText";
 import Header from "./Header";
 import { ResumeNodeProps, ResumePassProps } from "./ResumeNodeBase";
@@ -542,21 +542,21 @@ export default function ResumeComponent(props: ResumeComponentProps) {
     } as ResumeNodeProps;
     
     switch (props.type) {
-        case DescriptionList.name:
+        case DescriptionList.type:
             return <DescriptionList {...newProps} />;
-        case DescriptionListItem.name:
+        case DescriptionListItem.type:
             return <DescriptionListItem {...newProps} />;
-        case Column.name:
+        case Column.type:
             return <Column {...newProps} />;
-        case Row.name:
+        case Row.type:
             return <Row {...newProps} />;
-        case Header.name:
+        case Header.type:
             return <Header {...newProps} />
-        case Section.name:
+        case Section.type:
             return <Section {...newProps as SectionProps} />;
-        case Entry.name:
+        case Entry.type:
             return <Entry {...newProps} />;
-        case RichText.name:
+        case RichText.type:
             return <RichText {...newProps} />;
         default:
             return <React.Fragment></React.Fragment>
@@ -578,32 +578,32 @@ export class ComponentTypes {
      */
     static childTypes(type: string) : string | Array<string> {
         switch (type) {
-            case Row.name:
-                return Column.name;
-            case DescriptionList.name:
-                return DescriptionListItem.name;
-            case Entry.name:
+            case Row.type:
+                return Column.type;
+            case DescriptionList.type:
+                return DescriptionListItem.type;
+            case Entry.type:
                 return [
                     AliasTypes.BulletedList,
-                    DescriptionList.name,
-                    RichText.name
+                    DescriptionList.type,
+                    RichText.type
                 ];
-            case Header.name:
+            case Header.type:
                 return [
-                    Entry.name,
-                    RichText.name,
+                    Entry.type,
+                    RichText.type,
                     AliasTypes.BulletedList,
-                    DescriptionList.name
+                    DescriptionList.type
                 ];
-            case RichText.name:
+            case RichText.type:
                 return [];
             default:
                 return [
-                    Section.name,
-                    Entry.name,
-                    RichText.name,
+                    Section.type,
+                    Entry.type,
+                    RichText.type,
                     AliasTypes.BulletedList,
-                    DescriptionList.name
+                    DescriptionList.type
                 ];
         }
     }
@@ -615,14 +615,14 @@ export class ComponentTypes {
      */
     static cssName(type: string) : string[] {
         switch (type) {
-            case DescriptionList.name:
+            case DescriptionList.type:
                 return ['Description List'];
-            case DescriptionListItem.name:
+            case DescriptionListItem.type:
                 return ['Description List'];
-            case RichText.name:
+            case RichText.type:
                 return ['Rich Text'];
-            case Column.name:
-                return [Row.name, Column.name];
+            case Column.type:
+                return [Row.type, Column.type];
             default:
                 return [type];
         }
@@ -638,66 +638,66 @@ export class ComponentTypes {
                 return {
                     text: 'Bulleted List',
                     node: {
-                        type: RichText.name,
+                        type: RichText.type,
                         value: '<ul><li></li></ul>'
                     }
                 }
-            case Column.name:
+            case Column.type:
                 return {
-                    text: Column.name,
+                    text: Column.type,
                     node: {
-                        type: Column.name
+                        type: Column.type
                     }
                 }
-            case DescriptionList.name:
+            case DescriptionList.type:
                 return {
                     text: 'Description List',
                     node: {
-                        type: DescriptionList.name,
+                        type: DescriptionList.type,
                         children: [
                             {
-                                type: DescriptionListItem.name
+                                type: DescriptionListItem.type
                             }
                         ]
                     }
                 }
-            case DescriptionListItem.name:
+            case DescriptionListItem.type:
                 return {
                     text: 'Description List Item',
-                    node: { type: DescriptionListItem.name }
+                    node: { type: DescriptionListItem.type }
                 }
-            case Entry.name:
+            case Entry.type:
                 return {
                     text: 'Entry',
                     node: {
-                        type: Entry.name,
+                        type: Entry.type,
                         title: [''],
                         subtitle: ['']
                     } as BasicEntryProps
                 }
-            case RichText.name:
+            case RichText.type:
                 return {
                     text: 'Rich Text',
                     node: {
-                        type: RichText.name
+                        type: RichText.type
                     }
                 }
-            case Row.name:
+            case Row.type:
                 return {
-                    text: Row.name,
+                    text: Row.type,
                     node: {
-                        type: Row.name,
+                        type: Row.type,
                         children: [
-                            { type: Column.name },
-                            { type: Column.name }
+                            { type: Column.type },
+                            { type: Column.type }
                         ]
                     }
                 }
-            case Section.name:
+            case Section.type:
                 return {
-                    text: Section.name,
+                    text: Section.type,
                     node: {
-                        type: Section.name
+                        type: Section.type
                     }
                 }
             default:
@@ -711,7 +711,7 @@ export class ComponentTypes {
      */
     static isEditable(type: string) {
         let editable = new Set([
-            Section.name, RichText.name, Header.name, DescriptionListItem.name, Entry.name
+            Section.type, RichText.type, Header.type, DescriptionListItem.type, Entry.type
         ]);
 
         return editable.has(type);
