@@ -1,4 +1,8 @@
 ﻿import uuid from 'uuid/v4';
+<<<<<<< HEAD
+=======
+import { ResumeNode, BasicResumeNode } from './utility/NodeTree';
+>>>>>>> 8bb6e81 (Yuge upgrades (#7))
 
 /**
  * Return a copy of an array with the i-th element removed
@@ -66,6 +70,11 @@ export function arraysEqual<T>(left: Array<T>, right: Array<T>) {
     return true;
 }
 
+export function pushArray<T>(arr: Array<T>, data: T) {
+    arr.push(data);
+    return arr;
+}
+
 /**
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -101,36 +110,42 @@ export function pushArray(arr: object, data: any) {
  * Assign unique IDs to a node and its children, or an array of nodes by reference
  * @param nodeOrArray An object describing a node or an array of nodes
  */
+<<<<<<< HEAD
 >>>>>>> 89b3b06 (ESLint fixes + added tests via ts-jest)
 export function assignIds(nodeOrArray: object) {
+=======
+export function assignIds(nodeOrArray: BasicResumeNode): ResumeNode;
+export function assignIds(nodeOrArray: Array<BasicResumeNode>) : Array<ResumeNode>;
+export function assignIds(nodeOrArray: BasicResumeNode | Array<BasicResumeNode>) {
+>>>>>>> 8bb6e81 (Yuge upgrades (#7))
     if (nodeOrArray instanceof Array) {
         assignIdsToNodeArray(nodeOrArray);
-        return nodeOrArray as Array<object>;
+        return nodeOrArray as Array<ResumeNode>;
     }
 
     nodeOrArray['uuid'] = uuid();
-    let children = nodeOrArray['children'] as Array<object>;
+    let children = nodeOrArray.children as Array<ResumeNode>;
     if (children) {
-        assignIdsToNodeArray(nodeOrArray['children']);
+        assignIdsToNodeArray(children);
     }
 
-    return nodeOrArray;
+    return nodeOrArray as ResumeNode;
 }
 
 /**
  * Assign unique IDs to an array of nodes by reference
  * @param children An array of nodes
  */
-function assignIdsToNodeArray(children: Array<object>) {
+function assignIdsToNodeArray(children: Array<BasicResumeNode>) {
     // Assign unique IDs to all children
     let workQueue = [ children ];
     while(workQueue.length) {
-        let nextItem = workQueue.pop() as Array<object>;
+        let nextItem = workQueue.pop() as Array<BasicResumeNode>;
         nextItem.forEach((elem) => {
             elem['uuid'] = uuid();
 
-            if (elem['children']) {
-                workQueue.push(elem['children']);
+            if (elem.children) {
+                workQueue.push(elem.children);
             }
         });
     }
