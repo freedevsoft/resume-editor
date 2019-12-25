@@ -2,6 +2,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Represents resume prop properties and methods passed
  *  from the top down
  * */
@@ -68,6 +69,9 @@ import FlexibleRow, { FlexibleColumn } from "./FlexibleRow";
 =======
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
 import Section, { SectionProps } from "./Section";
+=======
+import Section from "./Section";
+>>>>>>> c60ff9c (Add CSS Grid (and other goodies...) (#8))
 import Entry, { BasicEntryProps } from "./Entry";
 import DescriptionList, { DescriptionListItem } from "./List";
 import RichText from "./RichText";
@@ -84,12 +88,15 @@ import Column from "./Column";
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
 =======
 import Grid from "./Grid";
+<<<<<<< HEAD
 >>>>>>> 6efd4ed (Added Grid and made MappedTextFields controlled)
+=======
+import Icon from "./Icon";
+>>>>>>> c60ff9c (Add CSS Grid (and other goodies...) (#8))
 
 export type EditorMode = 'normal'
     | 'landing'
     | 'help'
-    | 'editingStyle'
     | 'changingTemplate'
     | 'printing';
 
@@ -559,11 +566,13 @@ export default function ResumeComponent(props: ResumeComponentProps) {
         case Header.type:
             return <Header {...newProps} />
         case Section.type:
-            return <Section {...newProps as SectionProps} />;
+            return <Section {...newProps} />;
         case Entry.type:
             return <Entry {...newProps} />;
         case RichText.type:
             return <RichText {...newProps} />;
+        case Icon.type:
+            return <Icon {...newProps} />
         default:
             return <React.Fragment></React.Fragment>
 >>>>>>> cfdfcd6 (Rename)
@@ -587,7 +596,9 @@ export class ComponentTypes {
             case Grid.type:
                 return [
                     Row.type,
+                    Column.type,
                     Section.type,
+                    Icon.type,
                     Entry.type,
                     RichText.type,
                     AliasTypes.BulletedList,
@@ -618,7 +629,8 @@ export class ComponentTypes {
                     Entry.type,
                     RichText.type,
                     AliasTypes.BulletedList,
-                    DescriptionList.type
+                    DescriptionList.type,
+                    Grid.type
                 ];
             case RichText.type:
                 return [];
@@ -742,6 +754,13 @@ export class ComponentTypes {
                         type: Section.type
                     }
                 }
+            case Icon.type:
+                return {
+                    text: Icon.type,
+                    node: {
+                        type: Icon.type
+                    }
+                }
             default:
                 throw new Error(`Couldn't find information for component named ${type}`);
         }
@@ -760,9 +779,6 @@ export class ComponentTypes {
     }
 }
 
-/** Stores types which are just an alias for another type */
-export class AliasTypes {
-    static get BulletedList() {
-        return 'BulletedList';
-    }
+class AliasTypes {
+    static readonly BulletedList = 'Bulleted List';
 }

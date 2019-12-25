@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ﻿import { assignIds, process } from "./Helpers";
 =======
 ﻿import { isNullOrUndefined } from "util";
@@ -12,6 +13,9 @@ import { assignIds } from "./Helpers";
 =======
 ﻿import { assignIds, process } from "./Helpers";
 >>>>>>> bf506ab (Fixed issue with process())
+=======
+﻿import { assignIds, process, arraysEqual } from "./Helpers";
+>>>>>>> c60ff9c (Add CSS Grid (and other goodies...) (#8))
 
 test('assignIDs Test', () => {
     const node = {
@@ -46,6 +50,13 @@ test('assignIDs Test', () => {
 <<<<<<< HEAD
 =======
 >>>>>>> bf506ab (Fixed issue with process())
+});
+
+test('Helpers Test', () => {
+    let left = [0, 1, 0];
+    let right = [0, 1, 1];
+
+    expect(arraysEqual(left, right)).toBeFalsy();
 });
 
 test('process Test', () => {
