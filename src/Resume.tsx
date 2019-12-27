@@ -5,7 +5,9 @@ import { ContextMenuTrigger } from "react-contextmenu";
 import 'purecss/build/pure-min.css';
 import 'react-quill/dist/quill.snow.css';
 import './scss/index.scss';
+import './fonts/icofont.min.css';
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 import ResumeComponent, { EditorMode } from './components/ResumeComponent';
 import { Button, ButtonToolbar, Nav } from 'react-bootstrap';
@@ -35,8 +37,11 @@ import { SelectedNodeProps, AddChild, Action } from './components/ResumeNodeBase
 import ResumeTemplateProvider from './components/ResumeTemplateProvider';
 =======
 import ResumeComponent, { EditorMode, ComponentTypes } from './components/ResumeComponent';
+=======
+import ResumeComponent, { EditorMode } from './components/ResumeComponent';
+>>>>>>> 72f2dba (Improved dropdown menus + UI (#10))
 import { assignIds, deepCopy, arraysEqual } from './components/Helpers';
-import { Action, ResumeNodeProps, NodeProperty } from './components/ResumeNodeBase';
+import { Action, NodeProperty } from './components/ResumeNodeBase';
 import ResumeTemplateProvider from './components/templates/ResumeTemplateProvider';
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
 import { ResizableSidebarLayout, StaticSidebarLayout, DefaultLayout } from './components/controls/Layouts';
@@ -49,7 +54,7 @@ import HoverTracker, { IdType } from './components/utility/HoverTracker';
 import TopEditingBar, { EditingBarProps } from './components/controls/TopEditingBar';
 import ResumeNodeTree, { ResumeNode, BasicResumeNode } from './components/utility/NodeTree';
 import CssNode from './components/utility/CssTree';
-import PureMenu, { PureMenuLink, PureMenuItem } from './components/controls/PureMenu';
+import PureMenu, { PureMenuLink, PureMenuItem } from './components/controls/menus/PureMenu';
 import { Button } from './components/controls/Buttons';
 import { RenderIf } from './components/controls/HelperComponents';
 import { SelectedNodeActions } from './components/controls/SelectedNodeActions';
@@ -57,6 +62,8 @@ import CssEditor from './components/utility/CssEditor';
 import NodeTreeVisualizer from './components/utility/NodeTreeVisualizer';
 import Tabs from './components/controls/Tabs';
 import ResumeContextMenu from './components/controls/ResumeContextMenu';
+import generateHtml from './components/utility/GenerateHtml';
+import ComponentTypes from './components/schema/ComponentTypes';
 
 class Resume extends React.Component<{}, ResumeState> {
     hovering = new HoverTracker();
@@ -65,13 +72,12 @@ class Resume extends React.Component<{}, ResumeState> {
     shouldUpdateCss = false;
     style: HTMLStyleElement;
     unselect: Action;
-    resumeRef: React.RefObject<HTMLDivElement>;
-    prevHoverNode: number[] | undefined;
+    resumeRef = React.createRef<HTMLDivElement>();
+    undo = new Array<Array<ResumeNode>>();
+    redo = new Array<Array<ResumeNode>>();
 
     constructor(props) {
         super(props);
-
-        this.resumeRef = React.createRef<HTMLDivElement>();
 
         // Custom CSS
         const head = document.getElementsByTagName("head")[0];
@@ -82,14 +88,19 @@ class Resume extends React.Component<{}, ResumeState> {
         this.state = {
             css: this.css,
             children: [],
+            isEditingSelected: false,
             mode: "landing"
         };
-        this.renderStyle();
-
+        
+        this.handleClick = this.handleClick.bind(this);
         this.print = this.print.bind(this);
         this.toggleMode = this.toggleMode.bind(this);
 
         /** Resume Nodes */
+        this.updateNodes = this.updateNodes.bind(this);
+        this.undoChange = this.undoChange.bind(this);
+        this.redoChange = this.redoChange.bind(this);
+        this.addCssClasses = this.addCssClasses.bind(this);
         this.addHtmlId = this.addHtmlId.bind(this);
         this.addNestedChild = this.addNestedChild.bind(this);
         this.updateNestedChild = this.updateNestedChild.bind(this);
@@ -97,7 +108,6 @@ class Resume extends React.Component<{}, ResumeState> {
         /** Templates and Styling **/
         this.renderSidebar = this.renderSidebar.bind(this);
         this.changeTemplate = this.changeTemplate.bind(this);
-        this.renderStyle = this.renderStyle.bind(this);
         this.renderCssEditor = this.renderCssEditor.bind(this);
 
         /** Load & Save */
@@ -122,16 +132,12 @@ class Resume extends React.Component<{}, ResumeState> {
             this.setState({ selectedNode: undefined });
         };
     }
-    
-
-    /** Prevent component from being edited from the template changing screen */
-    get isEditable(): boolean {
-        return !this.isPrinting && !(this.state.mode === 'changingTemplate');
-    }
 
     /** Returns true if we are actively editing a resume */
     get isEditing(): boolean {
-        return this.isEditable && (this.state.children.length > 0);
+        return this.state.mode === 'normal'
+            || this.state.mode === 'help'
+            || (this.state.children.length > 0);
     }
 
     get isPrinting(): boolean {
@@ -144,31 +150,21 @@ class Resume extends React.Component<{}, ResumeState> {
             // Add an ID to the set of nodes we are hovering over
             hoverOver: (id: IdType) => {
                 this.hovering.hoverOver(id);
-                this.setState({
-                    hoverNode: this.hovering.currentId
-                });
+                this.setState({ hoverNode: this.hovering.currentId });
             },
 
             // Remove an ID from the set of nodes we are hovering over
-            hoverOut: (id: IdType) => {
-                this.hovering.hoverOut(id);
-                this.setState({
-                    hoverNode: this.hovering.currentId
-                });
+            hoverOut: () => {
+                this.hovering.hoverOut();
+                this.setState({ hoverNode: this.hovering.currentId });
             },
-
-            // Determines if we are currently hovering over a node
-            isHovering: this.hovering.isHovering,
-
+            
             // Determines if a node is selectable or not
             isSelectBlocked: (id: IdType) => {
                 return !arraysEqual(id, this.hovering.currentId);
             },
 
-            // Returns true if the given node is currently selected
-            isSelected: (uuid: string) => {
-                return this.selectedNode ? uuid === this.selectedNode['uuid'] : false;
-            },
+            selectedUuid: this.selectedNode ? this.selectedNode.uuid : undefined,
 
             // Update the selected node
             updateSelected: (id?: IdType) => {
@@ -191,30 +187,26 @@ class Resume extends React.Component<{}, ResumeState> {
     /**
      * Update stylesheets
      * @param prevProps
-     * @param prevState
      */
-    componentDidUpdate(_prevProps, prevState: ResumeState) {
+    componentDidUpdate(_prevProps) {
         if (this.shouldUpdateCss) {
-            this.renderStyle();
+            this.style.innerHTML = this.state.css.stylesheet();
             this.shouldUpdateCss = false;
         }
+    }
 
-        // If the previously selected node was editing, bring it
-        // out of an editing state
-        if (prevState.selectedNode && (prevState.selectedNode !== this.state.selectedNode)) {
-            // Make sure node wasn't deleted before we try to modify it
-            const prevNode = this.nodes.getNodeById(prevState.selectedNode);
-            if (prevNode) {
-                (prevNode as ResumeNodeProps).isEditing = false;
-            }
+    /**
+     * Handles clicks on the resume
+     * @param event
+     */
+    handleClick(event: React.MouseEvent) {
+        if (this.state.mode === 'changingTemplate') {
+            this.toggleMode();
+        } else {
+            this.editSelected();
         }
     }
-
-    // Push style changes to browser
-    renderStyle() {
-        this.style.innerHTML = this.state.css.stylesheet();
-    }
-
+    
     /**
      * Switch into mode if not already. Otherwise, return to normal.
      * @param mode Mode to check
@@ -270,11 +262,48 @@ class Resume extends React.Component<{}, ResumeState> {
             }
 
             currentNode.htmlId = htmlId;
-            this.css.add(root);
+            this.css.addNode(root);
             this.setState({
                 css: this.css,
                 children: this.nodes.children
             });
+        }
+    }
+
+    addCssClasses(classes: string) {
+        const currentNode = this.selectedNode as ResumeNode;
+        if (currentNode) {
+            currentNode.classNames = classes;
+            this.setState({ children: this.nodes.children });
+        }
+    }
+
+    updateNodes(callback: (nodes: ResumeNodeTree) => void) {
+        this.undo.push(deepCopy(this.state.children));
+        callback(this.nodes);
+
+        this.setState({
+            children: this.nodes.children
+        });
+    }
+
+    undoChange() {
+        const prev = this.undo.pop();
+
+        // prev.length > 0 avoids undoing the initial template load
+        if (prev && prev.length > 0) {
+            this.redo.push([...this.state.children]);
+            this.nodes.children = prev;
+            this.setState({
+                children: prev
+            });
+        }
+    }
+
+    redoChange() {
+        const next = this.redo.pop();
+        if (next) {
+            this.updateNodes((nodes) => nodes.children = next);
         }
     }
 
@@ -303,9 +332,13 @@ class Resume extends React.Component<{}, ResumeState> {
 >>>>>>> d13d2e6 (Avoid mutating state directly no. 1)
 =======
     addChild<T extends BasicResumeNode>(node: T) {
+<<<<<<< HEAD
         this.nodes.addChild(assignIds(node));
         this.setState({ children: this.nodes.children });
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
+=======
+        this.updateNodes((nodes) => nodes.addChild(assignIds(node)));
+>>>>>>> 72f2dba (Improved dropdown menus + UI (#10))
     }
 
     /**
@@ -351,17 +384,15 @@ class Resume extends React.Component<{}, ResumeState> {
 >>>>>>> 88bb689 (Removed immutability-helper)
 =======
     addNestedChild(id: IdType, node: ResumeNode) {
-        this.nodes.addNestedChild(id, node);
-        this.setState({ children: this.nodes.children });
+        this.updateNodes((nodes) => nodes.addNestedChild(id, node));
     }
 
     deleteSelected() {
         const id = this.state.selectedNode as IdType;
         if (id) {
-            this.nodes.deleteChild(id);
-            this.hovering.hoverOut(id);
+            this.updateNodes((nodes) => nodes.deleteChild(id));
+            this.hovering.hoverOut();
             this.setState({
-                children: this.nodes.children,
                 hoverNode: this.hovering.currentId,
                 selectedNode: undefined
             });
@@ -370,8 +401,7 @@ class Resume extends React.Component<{}, ResumeState> {
     }
 
     updateNestedChild(id: IdType, key: string, data: any) {
-        this.nodes.updateChild(id, key, data);
-        this.setState({ children: this.nodes.children });
+        this.updateNodes((nodes) => nodes.updateChild(id, key, data));
     }
 
 <<<<<<< HEAD
@@ -429,17 +459,12 @@ class Resume extends React.Component<{}, ResumeState> {
 >>>>>>> de2d618 (Refactored top nav)
         const id = this.state.selectedNode as IdType;
         if (id) {
-            this.nodes.updateChild(id, key, data);
-            this.setState({ children: this.nodes.children });
+            this.updateNodes((nodes) => nodes.updateChild(id, key, data));
         }
     }
 
     editSelected() {
-        const id = this.state.selectedNode as IdType;
-        if (id) {
-            this.nodes.toggleEdit(id);
-            this.setState({ children: this.nodes.children });
-        }
+        this.setState({ isEditingSelected: true });
     }
 
     get moveSelectedUpEnabled() {
@@ -450,9 +475,8 @@ class Resume extends React.Component<{}, ResumeState> {
     moveSelectedUp() {
         const id = this.state.selectedNode as IdType;
         if (this.moveSelectedUpEnabled) {
-            this.setState({
-                children: this.nodes.children,
-                selectedNode: this.nodes.moveUp(id)
+            this.updateNodes((nodes) => {
+                this.setState({ selectedNode: nodes.moveUp(id) });
             });
         }
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
@@ -466,9 +490,8 @@ class Resume extends React.Component<{}, ResumeState> {
     moveSelectedDown() {
         const id = this.state.selectedNode as IdType;
         if (this.moveSelectedDownEnabled) {
-            this.setState({
-                children: this.nodes.children,
-                selectedNode: this.nodes.moveDown(id)
+            this.updateNodes((nodes) => {
+                this.setState({ selectedNode: nodes.moveDown(id) });
             });
         }
     }
@@ -492,11 +515,14 @@ class Resume extends React.Component<{}, ResumeState> {
 
     /** Paste whatever is currently in the clipboard */
     pasteClipboard() {
-        if (this.selectedNode) {
-            // UUIDs will be added in the method below
-            this.addNestedChild(this.state.selectedNode as IdType,
-                deepCopy(this.state.clipboard));
+        // Default target: root
+        let target: IdType = [];
+        if (this.state.selectedNode) {
+            target = this.state.selectedNode;
         }
+
+        // UUIDs will be added in the method below
+        this.addNestedChild(target, deepCopy(this.state.clipboard));
     }
     //#endregion
 <<<<<<< HEAD
@@ -598,33 +624,10 @@ class Resume extends React.Component<{}, ResumeState> {
     exportHtml() {
         // TODO: Make this user defineable
         const filename = 'resume.html';
-
-        let resumeHtml = '';
-        if (this.resumeRef.current) {
-            resumeHtml = this.resumeRef.current.outerHTML;
-        }
-
-        let html = `<!doctype html>
-
-<html lang="en">
-    <head>
-        <title>Resume</title>
-        <meta charset="utf-8">
-        <style>
-            ${this.css.stylesheet()}
-        </style>
-        <link href="https://fonts.googleapis.com/css?family=Merriweather|Open+Sans&display=swap" rel="stylesheet">
-    </head>
-    <body style="margin: 0">
-        ${resumeHtml}
-    </body>
-</html>
-`
-
-        var blob = new Blob([html],
-            {
-                type: "text/html;charset=utf-8"
-            }
+        let resumeHtml = this.resumeRef.current ? this.resumeRef.current.outerHTML : '';
+        var blob = new Blob(
+            [generateHtml(this.css.stylesheet(), resumeHtml)],
+            { type: "text/html;charset=utf-8" }
         );
 
         saveAs(blob, filename);
@@ -632,12 +635,11 @@ class Resume extends React.Component<{}, ResumeState> {
 
     loadData(data: object, mode: EditorMode = 'normal') {
         let savedData = data as ResumeSaveData;
-        this.nodes.children = assignIds(savedData.children);
+        this.updateNodes((nodes) => nodes.children = assignIds(savedData.children));
         this.css = CssNode.load(savedData.builtinCss);
 
         this.setState({
             css: this.css,
-            children: this.nodes.children,
             mode: mode
         })
 
@@ -651,6 +653,7 @@ class Resume extends React.Component<{}, ResumeState> {
                 this.loadData(JSON.parse(savedData));
             }
             catch {
+                // TODO: Show an error message
                 console.log("Nope, that didn't work.");
             }
         }
@@ -682,7 +685,6 @@ class Resume extends React.Component<{}, ResumeState> {
     //#region Helper Component Props
     get selectedNodeActions() : SelectedNodeActions {
         return {
-            edit: this.editSelected,
             delete: this.deleteSelected,
             moveUp: this.moveSelectedUp,
             moveDown: this.moveSelectedDown,
@@ -715,19 +717,23 @@ class Resume extends React.Component<{}, ResumeState> {
             selectedNodeId: this.state.selectedNode,
             selectedNode: this.selectedNode,
             addHtmlId: this.addHtmlId,
+            addCssClasses: this.addCssClasses,
             updateNode: this.updateSelected,
             addChild: this.addNestedChild,
-            toggleEdit: this.editSelected,
             moveUpEnabled: this.moveSelectedUpEnabled,
             moveDownEnabled: this.moveSelectedDownEnabled,
             unselect: this.unselect,
-            updateSelected: this.updateSelected
+            updateSelected: this.updateSelected,
+            undo: this.undoChange,
+            redo: this.redoChange
         }
     }
 
     get resumeHotKeysProps() {
         return {
             ...this.selectedNodeActions,
+            undo: this.undoChange,
+            redo: this.redoChange,
             togglePrintMode: () => this.toggleMode('printing'),
             reset: () => {
                 this.unselect();
@@ -738,9 +744,16 @@ class Resume extends React.Component<{}, ResumeState> {
 
     print() {
         requestAnimationFrame(() => {
-            this.setState({ mode: 'printing' });
+            const prevState = { ...this.state };
+
+            this.setState({
+                selectedNode: undefined,
+                mode: 'printing'
+            });
+
             window.print();
-            this.setState({ mode: 'normal' });
+
+            this.setState(prevState);
         });
     }
     //#endregion
@@ -765,7 +778,7 @@ class Resume extends React.Component<{}, ResumeState> {
 
     renderCssEditor() {
         const adder = (path, name, selector) => {
-            (this.css.findNode(path) as CssNode).add(new CssNode(name, {}, selector));
+            (this.css.findNode(path) as CssNode).add(name, {}, selector);
             this.setState({ css: this.css });
             this.shouldUpdateCss = true;
         }
@@ -829,36 +842,31 @@ class Resume extends React.Component<{}, ResumeState> {
                 
         return <CssEditor root={this.state.css} autoCollapse={true} {...editorProps} />
     }
-
+    
     render() {
-        // TODO: Make this moar better
-        const Toolbar = (props: any) => {
-           return <>{props.children}</>
-        };
-
         const resume = <div id="resume-container">
             <ContextMenuTrigger id="resume-menu">
-                <div id="resume" ref={this.resumeRef} onContextMenu={() => this.setState({
+                <div id="resume" ref={this.resumeRef}
+                    onClick={this.handleClick}
+                    onContextMenu={() => this.setState({
                     selectedNode: this.hovering.currentId })}>
                     <ResumeHotKeys {...this.resumeHotKeysProps} />
                 
+                    {this.state.children.map((elem, idx, arr) => {
+                        const uniqueId = elem.uuid;
+                        const props = {
+                            ...elem,
+                            mode: this.state.mode,
+                            updateData: this.updateNestedChild,
+                            ...this.hoverProps,
 
-                {this.state.children.map((elem, idx, arr) => {
-
-                    const uniqueId = elem.uuid;
-                    const props = {
-                        ...elem,
-                        mode: this.state.mode,
-                        toggleEdit: this.editSelected.bind(this),
-                        updateData: this.updateNestedChild,
-                        ...this.hoverProps,
-
-                        index: idx,
-                        numSiblings: arr.length
-                    };
+                            isEditing: this.state.isEditingSelected,
+                            index: idx,
+                            numSiblings: arr.length
+                        };
 
                     return <ResumeComponent key={uniqueId} {...props} />
-                })}
+                    })}
                 </div>
             </ContextMenuTrigger>
 
@@ -868,9 +876,7 @@ class Resume extends React.Component<{}, ResumeState> {
                 selectNode={(id) => this.setState({selectedNode: id})}
             />
         </div>
-
-        let main = resume;
-
+        
         const topEditingBar = this.isEditing ? <TopEditingBar {...this.editingBarProps} /> : <></>
         const editingTop = <RenderIf render={!this.isPrinting}>
             <header id="app-header" className="no-print">
@@ -894,12 +900,12 @@ class Resume extends React.Component<{}, ResumeState> {
                     sideBar={this.renderTemplateChanger()}
                 />
             case 'landing':
-                main = <Landing loadLocal={() => { this.loadLocal() }} />
+                const main = <Landing loadLocal={() => { this.loadLocal() }} />
                 return <DefaultLayout
                     topNav={editingTop}
                     main={main} />
             case 'printing':
-                return main;
+                return resume;
             default:
                 return <ResizableSidebarLayout
                     topNav={editingTop}
