@@ -1,6 +1,5 @@
 ﻿import * as React from "react";
 import { RowProps, BasicRowProps } from "./Row";
-import ResumeNodeBase from "./ResumeNodeBase";
 import QuillEditor from "./controls/inputs/QuillEditor";
 import Container from "./Container";
 
@@ -33,7 +32,7 @@ export interface BasicHeaderProps extends BasicRowProps, HeaderBase { };
 export interface HeaderProps extends RowProps, HeaderBase { };
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
 
-export default class Header extends ResumeNodeBase<HeaderProps> {
+export default class Header extends React.PureComponent<HeaderProps> {
     static readonly type: string = 'Header';
 
     get style(): React.CSSProperties {

@@ -1,5 +1,6 @@
 ﻿import uuid from 'uuid/v4';
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import { ResumeNode, BasicResumeNode } from './utility/NodeTree';
 <<<<<<< HEAD
@@ -7,6 +8,10 @@ import { ResumeNode, BasicResumeNode } from './utility/NodeTree';
 =======
 import { isNullOrUndefined } from 'util';
 >>>>>>> 6092a08 (Ready to get rid of ResumeNodeBase)
+=======
+import { isNullOrUndefined } from 'util';
+import { BasicResumeNode, ResumeNode } from './utility/Types';
+>>>>>>> 2d7c1e3 (Deleted ResumeNodeBase)
 
 /**
  * Return a copy of an array with the i-th element removed

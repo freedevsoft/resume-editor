@@ -80,6 +80,7 @@ import Entry from "./Entry";
 import DescriptionList, { DescriptionListItem } from "./List";
 import RichText from "./RichText";
 import Header from "./Header";
+<<<<<<< HEAD
 import { ResumeNodeProps, ResumePassProps, NodeProperty } from "./ResumeNodeBase";
 import { IdType } from "./utility/HoverTracker";
 <<<<<<< HEAD
@@ -89,6 +90,9 @@ import { IdType } from "./utility/HoverTracker";
 import { BasicResumeNode } from "./utility/NodeTree";
 =======
 >>>>>>> 72f2dba (Improved dropdown menus + UI (#10))
+=======
+import ResumeNodeProps, { ResumePassProps } from "./ResumeNodeProps";
+>>>>>>> 2d7c1e3 (Deleted ResumeNodeBase)
 import Row from "./Row";
 import Column from "./Column";
 <<<<<<< HEAD
@@ -99,7 +103,11 @@ import Grid from "./Grid";
 >>>>>>> 6efd4ed (Added Grid and made MappedTextFields controlled)
 =======
 import Icon from "./Icon";
+<<<<<<< HEAD
 >>>>>>> c60ff9c (Add CSS Grid (and other goodies...) (#8))
+=======
+import { IdType, NodeProperty } from "./utility/Types";
+>>>>>>> 2d7c1e3 (Deleted ResumeNodeBase)
 
 export type EditorMode = 'normal'
     | 'landing'

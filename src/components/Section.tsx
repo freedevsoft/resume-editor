@@ -1,10 +1,11 @@
 ﻿import * as React from "react";
-import ResumeNodeBase from "./ResumeNodeBase";
 import TextField from "./controls/inputs/TextField";
 import Container from "./Container";
 import { process, isEmpty } from "./Helpers";
+import ResumeNodeProps from "./ResumeNodeProps";
 
 /** Represents a section in a resume */
+<<<<<<< HEAD
 <<<<<<< HEAD
 export default class Section extends ResumeNodeBase<SectionProps> {
     constructor(props: SectionProps) {
@@ -27,6 +28,9 @@ export default class Section extends ResumeNodeBase<SectionProps> {
 =======
 export default class Section extends ResumeNodeBase {
 >>>>>>> c60ff9c (Add CSS Grid (and other goodies...) (#8))
+=======
+export default class Section extends React.PureComponent<ResumeNodeProps> {
+>>>>>>> 2d7c1e3 (Deleted ResumeNodeBase)
     static readonly type = 'Section';
     
     render() {
