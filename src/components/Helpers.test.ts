@@ -15,16 +15,20 @@ import { assignIds } from "./Helpers";
 >>>>>>> bf506ab (Fixed issue with process())
 =======
 ﻿import { assignIds, process, arraysEqual } from "./Helpers";
+<<<<<<< HEAD
 >>>>>>> c60ff9c (Add CSS Grid (and other goodies...) (#8))
+=======
+import { BasicResumeNode } from "./utility/NodeTree";
+>>>>>>> 3dda565 (Fixed some failing tests)
 
 test('assignIDs Test', () => {
     const node = {
         type: 'FlexibleRow',
-        children: [
+        childNodes: [
             { type: 'FlexibleColumn' },
             { type: 'FlexibleColumn' }
         ]
-    };
+    } as BasicResumeNode;
 
     // Assign unique IDs
     assignIds(node);
@@ -38,6 +42,7 @@ test('assignIDs Test', () => {
     expect(topId).toBeDefined();
 
     // Test that IDs are unique
+<<<<<<< HEAD
     node.children.forEach(
         (child) => {
             expect(child['uuid']).not.toBe(topId);
@@ -50,6 +55,19 @@ test('assignIDs Test', () => {
 <<<<<<< HEAD
 =======
 >>>>>>> bf506ab (Fixed issue with process())
+=======
+    expect(node.childNodes).toBeDefined();
+    if (node.childNodes) {
+        node.childNodes.forEach(
+            (child) => {
+                expect(child['uuid']).not.toBe(topId);
+                expect(child['uuid']).toBeDefined();
+            }
+        );
+
+        expect(node.childNodes[0]['uuid']).not.toBe(node.childNodes[1]['uuid']);
+    }
+>>>>>>> 3dda565 (Fixed some failing tests)
 });
 
 test('Helpers Test', () => {

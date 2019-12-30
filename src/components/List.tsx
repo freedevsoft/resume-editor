@@ -7,7 +7,7 @@ interface DescriptionItemProps extends ResumeNodeProps {
 }
 
 export class DescriptionListItem extends ResumeNodeBase<DescriptionItemProps> {
-    static readonly type = 'DescriptionListItem';
+    static readonly type = 'Description List Item';
 
     get className() {
         return super.className + " resume-definition";
@@ -75,7 +75,7 @@ export default class List extends ResumeNodeBase<ListProps> {
 export class DescriptionList extends ResumeNodeBase {
 =======
 export default class DescriptionList extends ResumeNodeBase {
-    static readonly type = 'DescriptionList';
+    static readonly type = 'Description List';
 
 <<<<<<< HEAD
 >>>>>>> aa40481 (Removed usage of Function.name which caused issues when minified)
