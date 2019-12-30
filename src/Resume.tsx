@@ -9,6 +9,7 @@ import './fonts/icofont.min.css';
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import ResumeComponent, { EditorMode } from './components/ResumeComponent';
 import { Button, ButtonToolbar, Nav } from 'react-bootstrap';
 <<<<<<< HEAD
@@ -40,6 +41,9 @@ import ResumeComponent, { EditorMode, ComponentTypes } from './components/Resume
 =======
 import ResumeComponent, { EditorMode } from './components/ResumeComponent';
 >>>>>>> 72f2dba (Improved dropdown menus + UI (#10))
+=======
+import ResumeComponentFactory from './components/ResumeComponent';
+>>>>>>> 1ec9e42 (Consolidated a bunch of interfaces)
 import { assignIds, deepCopy, arraysEqual } from './components/Helpers';
 import ResumeTemplateProvider from './components/templates/ResumeTemplateProvider';
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
@@ -62,7 +66,7 @@ import Tabs from './components/controls/Tabs';
 import ResumeContextMenu from './components/controls/ResumeContextMenu';
 import generateHtml from './components/utility/GenerateHtml';
 import ComponentTypes from './components/schema/ComponentTypes';
-import { Action, IdType, NodeProperty, ResumeSaveData, ResumeNode, BasicResumeNode } from './components/utility/Types';
+import { Action, IdType, NodeProperty, ResumeSaveData, ResumeNode, BasicResumeNode, EditorMode } from './components/utility/Types';
 
 export interface ResumeState {
     css: CssNode;
@@ -900,7 +904,7 @@ class Resume extends React.Component<{}, ResumeState> {
                             numSiblings: arr.length
                         };
 
-                    return <ResumeComponent key={uniqueId} {...props} />
+                    return <ResumeComponentFactory key={uniqueId} {...props} />
                     })}
                 </div>
             </ContextMenuTrigger>

@@ -82,6 +82,7 @@ import RichText from "./RichText";
 import Header from "./Header";
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { ResumeNodeProps, ResumePassProps, NodeProperty } from "./ResumeNodeBase";
 import { IdType } from "./utility/HoverTracker";
 <<<<<<< HEAD
@@ -97,6 +98,8 @@ import ResumeNodeProps, { ResumePassProps } from "./ResumeNodeProps";
 =======
 import ResumeNodeProps, { ResumePassProps, SelectedNodeManagement } from "./ResumeNodeProps";
 >>>>>>> 57585ae (Simplified some more interfaces)
+=======
+>>>>>>> 1ec9e42 (Consolidated a bunch of interfaces)
 import Row from "./Row";
 import Column from "./Column";
 <<<<<<< HEAD
@@ -109,6 +112,7 @@ import Grid from "./Grid";
 import Icon from "./Icon";
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> c60ff9c (Add CSS Grid (and other goodies...) (#8))
 =======
 import { IdType, NodeProperty } from "./utility/Types";
@@ -116,14 +120,11 @@ import { IdType, NodeProperty } from "./utility/Types";
 =======
 import { IdType, NodeProperty, ResumeNode } from "./utility/Types";
 >>>>>>> 57585ae (Simplified some more interfaces)
+=======
+import ResumeComponentProps, { IdType, NodeProperty, ResumeNode, SelectedNodeManagement } from "./utility/Types";
+>>>>>>> 1ec9e42 (Consolidated a bunch of interfaces)
 
-export type EditorMode = 'normal'
-    | 'landing'
-    | 'help'
-    | 'changingTemplate'
-    | 'printing';
-
-interface ResumeComponentProps extends ResumeNode {
+interface FactoryProps extends ResumeNode {
     index: number;       // The n-th index of this node relative to its parent
     resumeIsEditing: boolean;
     numSiblings: number; // Number of siblings this node has
@@ -566,7 +567,7 @@ export default class ResumeNodeBase<P
 /**
  * Factory for loading a resume node from a JavaScript object
  */
-export default function ResumeComponent(props: ResumeComponentProps) {
+export default function ResumeComponentFactory(props: FactoryProps) {
     const parentId = props.parentId;
     const index = props.index;
     const isSelected = props.selectedNodeManagement.selectedUuid ===
@@ -585,7 +586,7 @@ export default function ResumeComponent(props: ResumeComponentProps) {
         // Generate unique IDs for component
         id: nodeId,
         isLast: index === props.numSiblings - 1
-    } as ResumeNodeProps;
+    } as ResumeComponentProps;
 
     let Container: typeof React.Component;
     switch (props.type) {
@@ -643,7 +644,7 @@ export default function ResumeComponent(props: ResumeComponentProps) {
                     parentId: newProps.id
                 };
 
-                return <ResumeComponent key={uniqueId} {...childProps} />
+                return <ResumeComponentFactory key={uniqueId} {...childProps} />
             })
         }
 
