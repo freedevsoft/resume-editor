@@ -109,7 +109,7 @@ export type EditorMode = 'normal'
 
 interface ResumeComponentProps extends ResumePassProps {
     index: number;       // The n-th index of this node relative to its parent
-    isEditing: boolean;
+    resumeIsEditing: boolean;
     numSiblings: number; // Number of siblings this node has
     parentId?: IdType;   // The id of the parent node
 }
@@ -551,14 +551,16 @@ export default class ResumeNodeBase<P
 export default function ResumeComponent(props: ResumeComponentProps) {
     const parentId = props.parentId;
     const index = props.index;
+    const isSelected = props.selectedUuid === props.uuid;
 
     let newProps = {
         ...props,
 
         // Generate unique IDs for component
         id: parentId ? [...parentId, index] : [index],
+        isEditing: props.resumeIsEditing && isSelected,
         isLast: index === props.numSiblings - 1,
-        isSelected: props.selectedUuid === props.uuid
+        isSelected: isSelected
     } as ResumeNodeProps;
 
     let Container: typeof React.Component;
@@ -605,7 +607,7 @@ export default function ResumeComponent(props: ResumeComponentProps) {
                 const uniqueId = elem.uuid;
                 const childProps = {
                     ...elem,
-                    isEditing: props.isEditing,
+                    resumeIsEditing: props.resumeIsEditing,
                     isSelected: props.selectedUuid === elem.uuid,
                     isSelectBlocked: props.isSelectBlocked,
                     hoverOver: props.hoverOver,
