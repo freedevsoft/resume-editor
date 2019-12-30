@@ -2,7 +2,11 @@
 <<<<<<< HEAD
 =======
 import { ResumeNode, BasicResumeNode } from './utility/NodeTree';
+<<<<<<< HEAD
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
+=======
+import { isNullOrUndefined } from 'util';
+>>>>>>> 6092a08 (Ready to get rid of ResumeNodeBase)
 
 /**
  * Return a copy of an array with the i-th element removed
@@ -68,6 +72,21 @@ export function arraysEqual<T>(left: Array<T>, right: Array<T>) {
     }
 
     return true;
+}
+
+/**
+ * Returns true if children are null or empty
+ * @param arr
+ */
+export function isEmpty<T>(children: Array<T> | {} | number | boolean | string | null | undefined) {
+    if (isNullOrUndefined(children)) {
+        return true;
+    }
+    else if (Array.isArray(children)) {
+        return children.length === 0;
+    }
+
+    return children > 0;
 }
 
 export function pushArray<T>(arr: Array<T>, data: T) {
