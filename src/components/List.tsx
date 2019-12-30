@@ -97,7 +97,7 @@ export default class DescriptionList extends ResumeNodeBase {
 >>>>>>> 72f2dba (Improved dropdown menus + UI (#10))
     render() {
         return <dl className={this.className} {...this.selectTriggerProps}>
-            {this.renderChildren()}
+            {this.props.children}
         </dl>
     }
 }

@@ -82,7 +82,7 @@ export default class Header extends ResumeNodeBase<HeaderProps> {
                     {value}
                     {subtitle}
                 </hgroup>
-                {this.renderChildren()}
+                {this.props.children}
             </header>
         );
     }
