@@ -81,6 +81,7 @@ import DescriptionList, { DescriptionListItem } from "./List";
 import RichText from "./RichText";
 import Header from "./Header";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { ResumeNodeProps, ResumePassProps, NodeProperty } from "./ResumeNodeBase";
 import { IdType } from "./utility/HoverTracker";
 <<<<<<< HEAD
@@ -93,6 +94,9 @@ import { BasicResumeNode } from "./utility/NodeTree";
 =======
 import ResumeNodeProps, { ResumePassProps } from "./ResumeNodeProps";
 >>>>>>> 2d7c1e3 (Deleted ResumeNodeBase)
+=======
+import ResumeNodeProps, { ResumePassProps, SelectedNodeManagement } from "./ResumeNodeProps";
+>>>>>>> 57585ae (Simplified some more interfaces)
 import Row from "./Row";
 import Column from "./Column";
 <<<<<<< HEAD
@@ -104,10 +108,14 @@ import Grid from "./Grid";
 =======
 import Icon from "./Icon";
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> c60ff9c (Add CSS Grid (and other goodies...) (#8))
 =======
 import { IdType, NodeProperty } from "./utility/Types";
 >>>>>>> 2d7c1e3 (Deleted ResumeNodeBase)
+=======
+import { IdType, NodeProperty, ResumeNode } from "./utility/Types";
+>>>>>>> 57585ae (Simplified some more interfaces)
 
 export type EditorMode = 'normal'
     | 'landing'
@@ -115,12 +123,13 @@ export type EditorMode = 'normal'
     | 'changingTemplate'
     | 'printing';
 
-interface ResumeComponentProps extends ResumePassProps {
+interface ResumeComponentProps extends ResumeNode {
     index: number;       // The n-th index of this node relative to its parent
     resumeIsEditing: boolean;
     numSiblings: number; // Number of siblings this node has
     parentId?: IdType;   // The id of the parent node
-    updateResumeData: (id: IdType, key: string, data: NodeProperty) => void;
+    updateResumeData: (id: IdType, key: string, data: NodeProperty) => void,
+    selectedNodeManagement: SelectedNodeManagement
 }
 
 <<<<<<< HEAD
@@ -560,11 +569,13 @@ export default class ResumeNodeBase<P
 export default function ResumeComponent(props: ResumeComponentProps) {
     const parentId = props.parentId;
     const index = props.index;
-    const isSelected = props.selectedUuid === props.uuid;
+    const isSelected = props.selectedNodeManagement.selectedUuid ===
+        props.uuid;
     const nodeId = parentId ? [...parentId, index] : [index];
 
     let newProps = {
         ...props,
+        ...props.selectedNodeManagement,
 
         // Compute properties
         updateData: (key, data) => props.updateResumeData(nodeId, key, data),
@@ -621,13 +632,9 @@ export default function ResumeComponent(props: ResumeComponentProps) {
                 const childProps = {
                     ...elem,
                     resumeIsEditing: props.resumeIsEditing,
-                    isSelected: props.selectedUuid === elem.uuid,
-                    isSelectBlocked: props.isSelectBlocked,
-                    hoverOver: props.hoverOver,
-                    hoverOut: props.hoverOut,
-                    updateSelected: props.updateSelected,
+                    selectedNodeManagement: props.selectedNodeManagement,
+                    isSelected: props.selectedNodeManagement.selectedUuid === elem.uuid,
                     updateResumeData: props.updateResumeData,
-                    selectedUuid: props.selectedUuid,
 
                     index: idx,
                     numSiblings: arr.length,
