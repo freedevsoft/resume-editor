@@ -45,11 +45,15 @@ import ResumeComponent, { EditorMode } from './components/ResumeComponent';
 import ResumeComponentFactory from './components/ResumeComponent';
 >>>>>>> 1ec9e42 (Consolidated a bunch of interfaces)
 import { assignIds, deepCopy, arraysEqual } from './components/Helpers';
+<<<<<<< HEAD
 import ResumeTemplateProvider from './components/templates/ResumeTemplateProvider';
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
+=======
+import ResumeTemplates from './components/templates/ResumeTemplates';
+>>>>>>> 3a8b276 (Cleaned up Resume.tsx)
 import { ResizableSidebarLayout, StaticSidebarLayout, DefaultLayout } from './components/controls/Layouts';
 import Landing from './components/help/Landing';
-import TopNavBar from './components/controls/TopNavBar';
+import TopNavBar, { TopNavBarProps } from './components/controls/TopNavBar';
 import ResumeHotKeys from './components/controls/ResumeHotkeys';
 import Help from './components/help/Help';
 import HoverTracker from './components/utility/HoverTracker';
@@ -58,7 +62,6 @@ import ResumeNodeTree from './components/utility/NodeTree';
 import CssNode, { ReadonlyCssNode } from './components/utility/CssTree';
 import PureMenu, { PureMenuLink, PureMenuItem } from './components/controls/menus/PureMenu';
 import { Button } from './components/controls/Buttons';
-import { RenderIf } from './components/controls/HelperComponents';
 import { SelectedNodeActions } from './components/controls/SelectedNodeActions';
 import CssEditor, { makeCssEditorProps } from './components/utility/CssEditor';
 import NodeTreeVisualizer from './components/utility/NodeTreeVisualizer';
@@ -66,7 +69,7 @@ import Tabs from './components/controls/Tabs';
 import ResumeContextMenu from './components/controls/ResumeContextMenu';
 import generateHtml from './components/utility/GenerateHtml';
 import ComponentTypes from './components/schema/ComponentTypes';
-import { Action, IdType, NodeProperty, ResumeSaveData, ResumeNode, BasicResumeNode, EditorMode } from './components/utility/Types';
+import { IdType, NodeProperty, ResumeSaveData, ResumeNode, EditorMode, Globals } from './components/utility/Types';
 
 export interface ResumeState {
     css: CssNode;
@@ -77,9 +80,7 @@ export interface ResumeState {
 
     activeTemplate?: string;
     clipboard?: object;
-
     isEditingSelected: boolean;
-    hoverNode?: IdType;
     selectedNode?: IdType;
 }
 
@@ -88,9 +89,7 @@ class Resume extends React.Component<{}, ResumeState> {
     nodes = new ResumeNodeTree();
     css = new CssNode("Resume CSS", {}, "#resume");
     rootCss = new CssNode(":root", {}, ":root");
-    shouldUpdateCss = false;
     style: HTMLStyleElement;
-    unselect: Action;
     resumeRef = React.createRef<HTMLDivElement>();
     undo = new Array<Array<ResumeNode>>();
     redo = new Array<Array<ResumeNode>>();
@@ -118,17 +117,21 @@ class Resume extends React.Component<{}, ResumeState> {
         this.toggleMode = this.toggleMode.bind(this);
 
         /** Resume Nodes */
-        this.updateNodes = this.updateNodes.bind(this);
-        this.undoChange = this.undoChange.bind(this);
-        this.redoChange = this.redoChange.bind(this);
         this.addCssClasses = this.addCssClasses.bind(this);
         this.addHtmlId = this.addHtmlId.bind(this);
         this.addChild = this.addChild.bind(this);
-        this.updataData = this.updataData.bind(this);
+        this.updateData = this.updateData.bind(this);
+        this.deleteSelected = this.deleteSelected.bind(this);
+        this.moveSelectedUp = this.moveSelectedUp.bind(this);
+        this.moveSelectedDown = this.moveSelectedDown.bind(this);
+        this.updateSelected = this.updateSelected.bind(this);
+        this.updateNodes = this.updateNodes.bind(this);
+        this.undoChange = this.undoChange.bind(this);
+        this.redoChange = this.redoChange.bind(this);
 
         /** Templates and Styling **/
+        this.loadTemplate = this.loadTemplate.bind(this);
         this.renderSidebar = this.renderSidebar.bind(this);
-        this.changeTemplate = this.changeTemplate.bind(this);
         this.renderCssEditor = this.renderCssEditor.bind(this);
 
         /** Load & Save */
@@ -137,21 +140,10 @@ class Resume extends React.Component<{}, ResumeState> {
         this.saveLocal = this.saveLocal.bind(this);
         this.saveFile = this.saveFile.bind(this);
 
-        this.editSelected = this.editSelected.bind(this);
-        this.deleteSelected = this.deleteSelected.bind(this);
-        this.moveSelectedUp = this.moveSelectedUp.bind(this);
-        this.moveSelectedDown = this.moveSelectedDown.bind(this);
-        this.updateSelected = this.updateSelected.bind(this);
-
         /** Cut & Paste */
         this.copyClipboard = this.copyClipboard.bind(this);
         this.cutClipboard = this.cutClipboard.bind(this);
         this.pasteClipboard = this.pasteClipboard.bind(this);
-
-        // Unselect the currently selected node
-        this.unselect = () => {
-            this.setState({ selectedNode: undefined });
-        };
     }
 
     /** Returns true if we are actively editing a resume */
@@ -166,18 +158,16 @@ class Resume extends React.Component<{}, ResumeState> {
     }
 
     /** Return props related to hover/select functionality */
-    get hoverProps() {
+    get selectedNodeProps() {
         return {
             // Add an ID to the set of nodes we are hovering over
             hoverOver: (id: IdType) => {
                 this.hovering.hoverOver(id);
-                this.setState({ hoverNode: this.hovering.currentId });
             },
 
             // Remove an ID from the set of nodes we are hovering over
             hoverOut: () => {
                 this.hovering.hoverOut();
-                this.setState({ hoverNode: this.hovering.currentId });
             },
             
             // Determines if a node is selectable or not
@@ -212,10 +202,9 @@ class Resume extends React.Component<{}, ResumeState> {
      * Update stylesheets
      * @param prevProps
      */
-    componentDidUpdate(_prevProps) {
-        if (this.shouldUpdateCss) {
+    componentDidUpdate(_prevProps, prevState) {
+        if (this.state.css !== prevState.css) {
             this.style.innerHTML = this.stylesheet;
-            this.shouldUpdateCss = false;
         }
     }
 
@@ -227,7 +216,8 @@ class Resume extends React.Component<{}, ResumeState> {
         if (this.state.mode === 'changingTemplate') {
             this.toggleMode();
         } else {
-            this.editSelected();
+            /** Edit the clicked element */
+            this.setState({ isEditingSelected: true });
         }
     }
     
@@ -241,23 +231,16 @@ class Resume extends React.Component<{}, ResumeState> {
     }
 
     //#region Changing Templates
-    changeTemplate() {
-        this.loadData(
-            ResumeTemplateProvider.templates['Integrity'](),
-            'changingTemplate'
-        );
-    }
+    loadTemplate(key = 'Integrity') {
+        const template: ResumeSaveData = ResumeTemplates.templates[key];
+        this.setState({ activeTemplate: key});
+        this.loadData(template, 'changingTemplate');
+    };
 
     renderTemplateChanger() {
-        const loadTemplate = (key: string) => {
-            const template = ResumeTemplateProvider.templates[key]();
-            this.setState({ activeTemplate: key, });
-            this.loadData(template, 'changingTemplate');
-        };
-
-        const templateNames = Object.keys(ResumeTemplateProvider.templates);
+        const templateNames = Object.keys(ResumeTemplates.templates);
         let navItems = templateNames.map((key: string) =>
-            <PureMenuItem key={key} onClick={() => loadTemplate(key)}>
+            <PureMenuItem key={key} onClick={() => this.loadTemplate(key)}>
                 <PureMenuLink>{key}</PureMenuLink>
             </PureMenuItem>
         );
@@ -288,7 +271,7 @@ class Resume extends React.Component<{}, ResumeState> {
             currentNode.htmlId = htmlId;
             this.css.addNode(root);
             this.setState({
-                css: this.css,
+                css: this.css.deepCopy(),
                 childNodes: this.nodes.childNodes
             });
         }
@@ -426,15 +409,12 @@ class Resume extends React.Component<{}, ResumeState> {
         if (id) {
             this.updateNodes((nodes) => nodes.deleteChild(id));
             this.hovering.hoverOut();
-            this.setState({
-                hoverNode: this.hovering.currentId,
-                selectedNode: undefined
-            });
+            this.setState({ selectedNode: undefined });
         }
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
     }
 
-    updataData(id: IdType, key: string, data: any) {
+    updateData(id: IdType, key: string, data: any) {
         this.updateNodes((nodes) => nodes.updateChild(id, key, data));
     }
 
@@ -495,10 +475,6 @@ class Resume extends React.Component<{}, ResumeState> {
         if (id) {
             this.updateNodes((nodes) => nodes.updateChild(id, key, data));
         }
-    }
-
-    editSelected() {
-        this.setState({ isEditingSelected: true });
     }
 
     get moveSelectedUpEnabled() {
@@ -674,17 +650,14 @@ class Resume extends React.Component<{}, ResumeState> {
         this.rootCss = CssNode.load(savedData.rootCss);
 
         this.setState({
-            css: this.css,
+            css: this.css.deepCopy(),
             mode: mode,
-            rootCss: this.rootCss
+            rootCss: this.rootCss.deepCopy()
         })
-
-        this.shouldUpdateCss = true;
     }
 
     loadLocal() {
-        // TODO: Make key a global constant
-        const savedData = localStorage.getItem('experiencer');
+        const savedData = localStorage.getItem(Globals.localStorageKey);
         if (savedData) {
             try {
                 this.loadData(JSON.parse(savedData));
@@ -724,23 +697,22 @@ class Resume extends React.Component<{}, ResumeState> {
     //#region Helper Component Props
     get selectedNodeActions() : SelectedNodeActions {
         return {
+            copyClipboard: this.copyClipboard,
+            cutClipboard: this.cutClipboard,
             delete: this.deleteSelected,
             moveUp: this.moveSelectedUp,
             moveDown: this.moveSelectedDown,
-
-            copyClipboard: this.copyClipboard,
-            cutClipboard: this.cutClipboard,
             pasteClipboard: this.pasteClipboard
         }
     }
 
-    get topMenuProps() {
+    get topMenuProps(): TopNavBarProps {
         let props = {
-            changeTemplate: this.changeTemplate,
             exportHtml: this.exportHtml,
             isEditing: this.isEditing,
-            mode: this.state.mode,
             loadData: this.loadData,
+            mode: this.state.mode,
+            new: this.loadTemplate,
             print: this.print,
             saveLocal: this.saveLocal,
             saveFile: this.saveFile,
@@ -763,7 +735,7 @@ class Resume extends React.Component<{}, ResumeState> {
             moveUpEnabled: this.moveSelectedUpEnabled,
             moveDownEnabled: this.moveSelectedDownEnabled,
             unsavedChanges: this.state.unsavedChanges,
-            unselect: this.unselect,
+            unselect: () => this.setState({ selectedNode: undefined }),
             updateSelected: this.updateSelected,
             undo: this.undoChange,
             redo: this.redoChange,
@@ -778,8 +750,10 @@ class Resume extends React.Component<{}, ResumeState> {
             redo: this.redoChange,
             togglePrintMode: () => this.toggleMode('printing'),
             reset: () => {
-                this.unselect();
-                this.setState({ mode: 'normal' });
+                this.setState({
+                    mode: 'normal',
+                    selectedNode: undefined
+                });
             }
         }
     }
@@ -833,15 +807,8 @@ class Resume extends React.Component<{}, ResumeState> {
     }
 
     renderCssEditor() {
-        const cssUpdateCallback = () => {
-            this.setState({ css: this.css });
-            this.shouldUpdateCss = true;
-        }
-
-        const rootCssUpdateCallback = () => {
-            this.setState({ rootCss: this.rootCss });
-            this.shouldUpdateCss = true;
-        }
+        const cssUpdateCallback = () => this.setState({ css: this.css.deepCopy() });
+        const rootCssUpdateCallback = () => this.setState({ rootCss: this.rootCss.deepCopy() });
 
         if (this.selectedNode) {
             const rootNode = this.state.css.findNode(
@@ -850,18 +817,14 @@ class Resume extends React.Component<{}, ResumeState> {
             let specificCssEditor = <></>
             if (this.selectedNode.htmlId && this.state.css.findNode([`#${this.selectedNode.htmlId}`])) {
                 const specificRoot = this.state.css.findNode([`#${this.selectedNode.htmlId}`]) as CssNode;
-                specificCssEditor = <CssEditor
-                    key={specificRoot.fullSelector}
-                    cssNode={new ReadonlyCssNode(specificRoot)}
+                specificCssEditor = <CssEditor cssNode={new ReadonlyCssNode(specificRoot)}
                     {...makeCssEditorProps(this.css, cssUpdateCallback)} />
             }
 
             if (rootNode) {
                 return <>
                     {specificCssEditor}
-                    <CssEditor
-                        key={rootNode.fullSelector}
-                        cssNode={new ReadonlyCssNode(rootNode)}
+                    <CssEditor cssNode={new ReadonlyCssNode(rootNode)}
                         {...makeCssEditorProps(this.css, cssUpdateCallback)}
                     />
                 </>
@@ -896,8 +859,8 @@ class Resume extends React.Component<{}, ResumeState> {
                         const props = {
                             ...elem,
                             mode: this.state.mode,
-                            updateResumeData: this.updataData,
-                            selectedNodeManagement: this.hoverProps,
+                            updateResumeData: this.updateData,
+                            selectedNodeManagement: this.selectedNodeProps,
 
                             resumeIsEditing: this.state.isEditingSelected,
                             index: idx,
@@ -916,13 +879,12 @@ class Resume extends React.Component<{}, ResumeState> {
             />
         </div>
         
-        const topEditingBar = this.isEditing ? <TopEditingBar {...this.editingBarProps} /> : <></>
-        const editingTop = <RenderIf render={!this.isPrinting}>
+        const editingTop = this.isPrinting ? <></> : (
             <header id="app-header" className="no-print">
                 <TopNavBar {...this.topMenuProps} />
-                {topEditingBar}
+                {this.isEditing ? <TopEditingBar {...this.editingBarProps} /> : <></>}
             </header>
-        </RenderIf>
+        );
 
         // Render the final layout based on editor mode
         switch (this.state.mode) {
@@ -943,7 +905,7 @@ class Resume extends React.Component<{}, ResumeState> {
                     topNav={editingTop}
                     main={<Landing
                         loadLocal={() => { this.loadLocal() }}
-                        new={this.changeTemplate}
+                        new={this.loadTemplate}
                         loadData={this.loadData}
                     />
                     } />
