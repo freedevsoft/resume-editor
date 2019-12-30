@@ -1,6 +1,7 @@
 ﻿import * as React from "react";
 import TextField from "./controls/inputs/TextField";
 import ResumeNodeBase, { ResumeNodeProps } from "./ResumeNodeBase";
+import Container from "./Container";
 
 interface DescriptionItemProps extends ResumeNodeProps {
     term?: string;
@@ -30,10 +31,10 @@ export class DescriptionListItem extends ResumeNodeBase<DescriptionItemProps> {
             {...this.textFieldProps}
         />
 
-        return <div className={this.className} {...this.selectTriggerProps}>
+        return <Container {...this.props} className={this.className}>
             <dt>{term}</dt>
             <dd>{value}</dd>
-        </div>
+        </Container>
     }
 }
 
@@ -96,8 +97,8 @@ export default class DescriptionList extends ResumeNodeBase {
 =======
 >>>>>>> 72f2dba (Improved dropdown menus + UI (#10))
     render() {
-        return <dl className={this.className} {...this.selectTriggerProps}>
+        return <Container displayAs="dl" {...this.props} className={this.className}>
             {this.props.children}
-        </dl>
+        </Container>
     }
 }
