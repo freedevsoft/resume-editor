@@ -91,7 +91,7 @@ class Resume extends React.Component<{}, ResumeState> {
     nodes = new ObservableResumeNodeTree();
     css = new CssNode("Resume CSS", {}, "#resume");
     rootCss = new CssNode(":root", {}, ":root");
-    style: HTMLStyleElement;
+    style = document.createElement("style");
     resumeRef = React.createRef<HTMLDivElement>();
 
     constructor(props) {
@@ -99,8 +99,6 @@ class Resume extends React.Component<{}, ResumeState> {
 
         // Custom CSS
         const head = document.getElementsByTagName("head")[0];
-        this.style = document.createElement("style");
-        this.style.innerHTML = "";
         head.appendChild(this.style);
 
         this.state = {
@@ -179,11 +177,8 @@ class Resume extends React.Component<{}, ResumeState> {
 
     /** Retrieve the selected node **/
     get selectedNode() {
-        if (this.state.selectedNode) {
-            return this.nodes.getNodeById(this.state.selectedNode);
-        }
-
-        return undefined;
+        return this.state.selectedNode ?
+            this.nodes.getNodeById(this.state.selectedNode) : undefined;
     }
 
     /** Return resume stylesheet */
@@ -232,16 +227,14 @@ class Resume extends React.Component<{}, ResumeState> {
 
     renderTemplateChanger() {
         const templateNames = Object.keys(ResumeTemplates.templates);
-        let navItems = templateNames.map((key: string) =>
-            <PureMenuItem key={key} onClick={() => this.loadTemplate(key)}>
-                <PureMenuLink>{key}</PureMenuLink>
-            </PureMenuItem>
-        );
-
         return (
             <>
                 <PureMenu>
-                    {navItems}
+                    {templateNames.map((key: string) =>
+                        <PureMenuItem key={key} onClick={() => this.loadTemplate(key)}>
+                            <PureMenuLink>{key}</PureMenuLink>
+                        </PureMenuItem>
+                    )}
                 </PureMenu>
                 <Button onClick={() => this.toggleMode()}>Use this Template</Button>
             </>
@@ -278,6 +271,10 @@ class Resume extends React.Component<{}, ResumeState> {
         }
     }
 
+    /**
+     * Respond to ObservableResumeNodeTree's updates
+     * @param nodes
+     */
     onNodeUpdate(nodes: ResumeNodeTree) {
         this.setState({
             childNodes: nodes.childNodes,
@@ -450,6 +447,7 @@ class Resume extends React.Component<{}, ResumeState> {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     get moveSelectedUpEnabled() {
         const id = this.state.selectedNode as IdType;
         return id && id[id.length - 1] > 0;
@@ -488,6 +486,8 @@ class Resume extends React.Component<{}, ResumeState> {
 
     //#region Clipboard
     /** Copy the currently selected node */
+=======
+>>>>>>> 0275062 (Cleaned up Resume.tsx)
     get clipboardProps() {
         const copyClipboard = () => {
             if (this.selectedNode) {
@@ -514,6 +514,28 @@ class Resume extends React.Component<{}, ResumeState> {
                 }
             } : undefined
         }
+    }
+
+    get undoRedoProps() {
+        return {
+            undo: this.nodes.isUndoable ? this.nodes.undo : undefined,
+            redo: this.nodes.isRedoable ? this.nodes.redo : undefined
+        };
+    }
+
+    get moveSelectedProps() {
+        const id = this.state.selectedNode as IdType;
+        const moveSelectedDownEnabled = id && !this.nodes.isLastSibling(id);
+        const moveSelectedUpEnabled = id && id[id.length - 1] > 0;
+
+        return {
+            moveUp: moveSelectedUpEnabled ?
+                () => this.setState({ selectedNode: this.nodes.moveUp(id) }) :
+                undefined,
+            moveDown: moveSelectedDownEnabled ?
+                () => this.setState({ selectedNode: this.nodes.moveDown(id) }) :
+                undefined
+        };
     }
     //#endregion
 <<<<<<< HEAD
@@ -765,7 +787,6 @@ class Resume extends React.Component<{}, ResumeState> {
         let suggestions = new Array<string>();
 
         for (let k of this.rootCss.properties.keys()) {
-            // Variable declaration
             if (k.slice(0, 2) === '--') {
                 suggestions.push(`var(${k})`);
             }
@@ -831,9 +852,9 @@ class Resume extends React.Component<{}, ResumeState> {
                             ...elem,
                             mode: this.state.mode,
                             updateResumeData: this.updateData,
+                            resumeIsEditing: this.state.isEditingSelected,
                             selectedNodeManagement: this.selectedNodeProps,
 
-                            resumeIsEditing: this.state.isEditingSelected,
                             index: idx,
                             numSiblings: arr.length
                         };
