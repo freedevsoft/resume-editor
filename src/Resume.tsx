@@ -127,8 +127,6 @@ class Resume extends React.Component<{}, ResumeState> {
         this.moveSelectedUp = this.moveSelectedUp.bind(this);
         this.moveSelectedDown = this.moveSelectedDown.bind(this);
         this.updateSelected = this.updateSelected.bind(this);
-        this.undoChange = this.undoChange.bind(this);
-        this.redoChange = this.redoChange.bind(this);
 
         /** Templates and Styling **/
         this.loadTemplate = this.loadTemplate.bind(this);
@@ -156,6 +154,13 @@ class Resume extends React.Component<{}, ResumeState> {
 
     get isPrinting(): boolean {
         return this.state.mode === 'printing';
+    }
+
+    get undoRedoProps() {
+        return {
+            undo: this.nodes.isUndoable ? this.nodes.undo : undefined,
+            redo: this.nodes.isRedoable ? this.nodes.redo : undefined
+        };
     }
 
     /** Return props related to hover/select functionality */
@@ -294,15 +299,7 @@ class Resume extends React.Component<{}, ResumeState> {
             unsavedChanges: true
         });
     }
-
-    undoChange() {
-        this.nodes.undo();
-    }
-
-    redoChange() {
-        this.nodes.redo();
-    }
-
+    
     /**
 <<<<<<< HEAD
      * Add an immediate child
@@ -713,6 +710,7 @@ class Resume extends React.Component<{}, ResumeState> {
 
     get editingBarProps() : EditingBarProps {
         return {
+            ...this.undoRedoProps,
             ...this.selectedNodeActions,
             selectedNodeId: this.state.selectedNode,
             selectedNode: this.selectedNode,
@@ -725,8 +723,6 @@ class Resume extends React.Component<{}, ResumeState> {
             unsavedChanges: this.state.unsavedChanges,
             unselect: () => this.setState({ selectedNode: undefined }),
             updateSelected: this.updateSelected,
-            undo: this.undoChange,
-            redo: this.redoChange,
             saveLocal: this.saveLocal
         }
     }
@@ -734,8 +730,7 @@ class Resume extends React.Component<{}, ResumeState> {
     get resumeHotKeysProps() {
         return {
             ...this.selectedNodeActions,
-            undo: this.undoChange,
-            redo: this.redoChange,
+            ...this.undoRedoProps,
             togglePrintMode: () => this.toggleMode('printing'),
             reset: () => {
                 this.setState({
