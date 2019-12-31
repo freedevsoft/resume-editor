@@ -70,6 +70,7 @@ import ResumeContextMenu from './components/controls/ResumeContextMenu';
 import generateHtml from './components/utility/GenerateHtml';
 import ComponentTypes from './components/schema/ComponentTypes';
 import { IdType, NodeProperty, ResumeSaveData, ResumeNode, EditorMode, Globals } from './components/utility/Types';
+import ObservableResumeNodeTree from './components/utility/ObservableResumeNodeTree';
 
 export interface ResumeState {
     css: CssNode;
@@ -80,19 +81,18 @@ export interface ResumeState {
 
     activeTemplate?: string;
     clipboard?: object;
+    hoverNode?: IdType;
     isEditingSelected: boolean;
     selectedNode?: IdType;
 }
 
 class Resume extends React.Component<{}, ResumeState> {
     hovering = new HoverTracker();
-    nodes = new ResumeNodeTree();
+    nodes = new ObservableResumeNodeTree();
     css = new CssNode("Resume CSS", {}, "#resume");
     rootCss = new CssNode(":root", {}, ":root");
     style: HTMLStyleElement;
     resumeRef = React.createRef<HTMLDivElement>();
-    undo = new Array<Array<ResumeNode>>();
-    redo = new Array<Array<ResumeNode>>();
 
     constructor(props) {
         super(props);
@@ -102,6 +102,8 @@ class Resume extends React.Component<{}, ResumeState> {
         this.style = document.createElement("style");
         this.style.innerHTML = "";
         head.appendChild(this.style);
+
+        this.nodes.subscribe(this.onNodeUpdate.bind(this));
 
         this.state = {
             css: this.css,
@@ -125,7 +127,6 @@ class Resume extends React.Component<{}, ResumeState> {
         this.moveSelectedUp = this.moveSelectedUp.bind(this);
         this.moveSelectedDown = this.moveSelectedDown.bind(this);
         this.updateSelected = this.updateSelected.bind(this);
-        this.updateNodes = this.updateNodes.bind(this);
         this.undoChange = this.undoChange.bind(this);
         this.redoChange = this.redoChange.bind(this);
 
@@ -163,11 +164,13 @@ class Resume extends React.Component<{}, ResumeState> {
             // Add an ID to the set of nodes we are hovering over
             hoverOver: (id: IdType) => {
                 this.hovering.hoverOver(id);
+                this.setState({ hoverNode: id });
             },
 
             // Remove an ID from the set of nodes we are hovering over
-            hoverOut: () => {
+            hoverOut: (id: IdType) => {
                 this.hovering.hoverOut();
+                this.setState({ hoverNode: id });
             },
             
             // Determines if a node is selectable or not
@@ -285,36 +288,19 @@ class Resume extends React.Component<{}, ResumeState> {
         }
     }
 
-    updateNodes(callback: (nodes: ResumeNodeTree) => void) {
-        this.undo.push(deepCopy(this.state.childNodes));
-        callback(this.nodes);
-
+    onNodeUpdate(nodes: ResumeNodeTree) {
         this.setState({
-            childNodes: this.nodes.childNodes,
+            childNodes: nodes.childNodes,
             unsavedChanges: true
         });
     }
 
     undoChange() {
-        const prev = this.undo.pop();
-
-        // prev.length > 0 avoids undoing the initial template load
-        if (prev && prev.length > 0) {
-            this.redo.push([...this.state.childNodes]);
-            this.nodes.childNodes = prev;
-            this.setState({
-                childNodes: prev,
-                unsavedChanges: true
-            });
-        }
+        this.nodes.undo();
     }
 
     redoChange() {
-        const next = this.redo.pop();
-        if (next) {
-            this.updateNodes((nodes) => nodes.childNodes = next);
-            this.setState({ unsavedChanges: true });
-        }
+        this.nodes.redo();
     }
 
     /**
@@ -400,14 +386,18 @@ class Resume extends React.Component<{}, ResumeState> {
     addNestedChild(id: IdType, node: ResumeNode) {
 =======
     addChild(id: IdType, node: ResumeNode) {
+<<<<<<< HEAD
 >>>>>>> 57585ae (Simplified some more interfaces)
         this.updateNodes((nodes) => nodes.addNestedChild(id, node));
+=======
+        this.nodes.addNestedChild(id, node);
+>>>>>>> c4c33f1 (Made node manipulations more reliable)
     }
 
     deleteSelected() {
         const id = this.state.selectedNode as IdType;
         if (id) {
-            this.updateNodes((nodes) => nodes.deleteChild(id));
+            this.nodes.deleteChild(id);
             this.hovering.hoverOut();
             this.setState({ selectedNode: undefined });
         }
@@ -415,7 +405,7 @@ class Resume extends React.Component<{}, ResumeState> {
     }
 
     updateData(id: IdType, key: string, data: any) {
-        this.updateNodes((nodes) => nodes.updateChild(id, key, data));
+        this.nodes.updateChild(id, key, data);
     }
 
 <<<<<<< HEAD
@@ -473,7 +463,7 @@ class Resume extends React.Component<{}, ResumeState> {
 >>>>>>> de2d618 (Refactored top nav)
         const id = this.state.selectedNode as IdType;
         if (id) {
-            this.updateNodes((nodes) => nodes.updateChild(id, key, data));
+            this.nodes.updateChild(id, key, data);
         }
     }
 
@@ -485,9 +475,7 @@ class Resume extends React.Component<{}, ResumeState> {
     moveSelectedUp() {
         const id = this.state.selectedNode as IdType;
         if (this.moveSelectedUpEnabled) {
-            this.updateNodes((nodes) => {
-                this.setState({ selectedNode: nodes.moveUp(id) });
-            });
+            this.setState({selectedNode: this.nodes.moveUp(id)});
         }
 >>>>>>> 8bb6e81 (Yuge upgrades (#7))
     }
@@ -500,9 +488,7 @@ class Resume extends React.Component<{}, ResumeState> {
     moveSelectedDown() {
         const id = this.state.selectedNode as IdType;
         if (this.moveSelectedDownEnabled) {
-            this.updateNodes((nodes) => {
-                this.setState({ selectedNode: nodes.moveDown(id) });
-            });
+            this.setState({ selectedNode: this.nodes.moveDown(id) });
         }
     }
     //#endregion
@@ -532,7 +518,9 @@ class Resume extends React.Component<{}, ResumeState> {
         }
 
         // UUIDs will be added in the method below
-        this.addChild(target, deepCopy(this.state.clipboard));
+        if (this.state.clipboard as ResumeNode) {
+            this.addChild(target, deepCopy(this.state.clipboard as ResumeNode));
+        }
     }
     //#endregion
 <<<<<<< HEAD
@@ -645,7 +633,7 @@ class Resume extends React.Component<{}, ResumeState> {
 
     loadData(data: object, mode: EditorMode = 'normal') {
         let savedData = data as ResumeSaveData;
-        this.updateNodes((nodes) => nodes.childNodes = assignIds(savedData.childNodes));
+        this.nodes.childNodes = assignIds(savedData.childNodes);
         this.css = CssNode.load(savedData.builtinCss);
         this.rootCss = CssNode.load(savedData.rootCss);
 
