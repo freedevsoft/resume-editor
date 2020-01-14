@@ -16,10 +16,14 @@ import { assignIds } from "./Helpers";
 =======
 ﻿import { assignIds, process, arraysEqual } from "./Helpers";
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> c60ff9c (Add CSS Grid (and other goodies...) (#8))
 =======
 import { BasicResumeNode } from "./utility/NodeTree";
 >>>>>>> 3dda565 (Fixed some failing tests)
+=======
+import { BasicResumeNode } from "./utility/Types";
+>>>>>>> 14ddb0c (Made editor more responsive (#12))
 
 test('assignIDs Test', async () => {
     const node = {
