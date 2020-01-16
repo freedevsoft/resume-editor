@@ -122,7 +122,11 @@ import { IdType, NodeProperty, ResumeNode } from "./utility/Types";
 >>>>>>> 57585ae (Simplified some more interfaces)
 =======
 import ResumeComponentProps, { IdType, NodeProperty, ResumeNode, SelectedNodeManagement } from "./utility/Types";
+<<<<<<< HEAD
 >>>>>>> 1ec9e42 (Consolidated a bunch of interfaces)
+=======
+import Divider from "./Divider";
+>>>>>>> 24d03e7 (Cover Letter (#13))
 
 interface FactoryProps extends ResumeNode {
     index: number;       // The n-th index of this node relative to its parent
@@ -596,6 +600,8 @@ export default function ResumeComponentFactory(props: FactoryProps) {
         case DescriptionListItem.type:
             Container = DescriptionListItem;
             break;
+        case Divider.type:
+            Container = Divider;
         case Grid.type:
             Container = Grid;
             break;
