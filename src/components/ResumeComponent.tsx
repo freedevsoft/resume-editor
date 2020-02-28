@@ -76,8 +76,12 @@ import Section from "./Section";
 import Entry, { BasicEntryProps } from "./Entry";
 =======
 import Entry from "./Entry";
+<<<<<<< HEAD
 >>>>>>> 72f2dba (Improved dropdown menus + UI (#10))
 import DescriptionList, { DescriptionListItem } from "./List";
+=======
+import DescriptionList, { DescriptionListItem, DescriptionListType, DescriptionListItemType } from "./List";
+>>>>>>> 6c435df (Patch 02/28/2020 (#17))
 import RichText from "./RichText";
 import Header from "./Header";
 <<<<<<< HEAD
@@ -107,6 +111,7 @@ import Column from "./Column";
 =======
 import Grid from "./Grid";
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 6efd4ed (Added Grid and made MappedTextFields controlled)
 =======
 import Icon from "./Icon";
@@ -125,16 +130,18 @@ import ResumeComponentProps, { IdType, NodeProperty, ResumeNode, SelectedNodeMan
 <<<<<<< HEAD
 >>>>>>> 1ec9e42 (Consolidated a bunch of interfaces)
 =======
+=======
+import Icon, { IconType } from "./Icon";
+import ResumeComponentProps, { IdType, NodeProperty, ResumeNode } from "./utility/Types";
+>>>>>>> 6c435df (Patch 02/28/2020 (#17))
 import Divider from "./Divider";
 >>>>>>> 24d03e7 (Cover Letter (#13))
 
 interface FactoryProps extends ResumeNode {
     index: number;       // The n-th index of this node relative to its parent
-    resumeIsEditing: boolean;
     numSiblings: number; // Number of siblings this node has
     parentId?: IdType;   // The id of the parent node
-    updateResumeData: (id: IdType, key: string, data: NodeProperty) => void,
-    selectedNodeManagement: SelectedNodeManagement
+    updateResumeData: (id: IdType, key: string, data: NodeProperty) => void
 }
 
 <<<<<<< HEAD
@@ -574,30 +581,25 @@ export default class ResumeNodeBase<P
 export default function ResumeComponentFactory(props: FactoryProps) {
     const parentId = props.parentId;
     const index = props.index;
-    const isSelected = props.selectedNodeManagement.selectedUuid ===
-        props.uuid;
     const nodeId = parentId ? [...parentId, index] : [index];
 
     let newProps = {
         ...props,
-        ...props.selectedNodeManagement,
 
         // Compute properties
         updateData: (key, data) => props.updateResumeData(nodeId, key, data),
-        isEditing: props.resumeIsEditing && isSelected,
-        isSelected: isSelected,
 
         // Generate unique IDs for component
         id: nodeId,
         isLast: index === props.numSiblings - 1
     } as ResumeComponentProps;
 
-    let Container: typeof React.Component;
+    let Container: typeof React.Component | React.FC<ResumeComponentProps>;
     switch (props.type) {
-        case DescriptionList.type:
+        case DescriptionListType:
             Container = DescriptionList;
             break;
-        case DescriptionListItem.type:
+        case DescriptionListItemType:
             Container = DescriptionListItem;
             break;
         case Divider.type:
@@ -624,7 +626,7 @@ export default function ResumeComponentFactory(props: FactoryProps) {
         case RichText.type:
             Container = RichText;
             break;
-        case Icon.type:
+        case IconType:
             Container = Icon;
             break;
         default:
@@ -639,9 +641,6 @@ export default function ResumeComponentFactory(props: FactoryProps) {
                 const uniqueId = elem.uuid;
                 const childProps = {
                     ...elem,
-                    resumeIsEditing: props.resumeIsEditing,
-                    selectedNodeManagement: props.selectedNodeManagement,
-                    isSelected: props.selectedNodeManagement.selectedUuid === elem.uuid,
                     updateResumeData: props.updateResumeData,
 
                     index: idx,

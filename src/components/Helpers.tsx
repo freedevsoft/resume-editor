@@ -1,6 +1,7 @@
 ﻿import uuid from 'uuid/v4';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import { ResumeNode, BasicResumeNode } from './utility/NodeTree';
 <<<<<<< HEAD
@@ -10,8 +11,43 @@ import { isNullOrUndefined } from 'util';
 >>>>>>> 6092a08 (Ready to get rid of ResumeNodeBase)
 =======
 import { isNullOrUndefined } from 'util';
+=======
+import { isNullOrUndefined, isNull } from 'util';
+>>>>>>> 6c435df (Patch 02/28/2020 (#17))
 import { BasicResumeNode, ResumeNode } from './utility/Types';
 >>>>>>> 2d7c1e3 (Deleted ResumeNodeBase)
+
+/**
+ * Create a container for holding context menus and other dialogs
+ * as a child of the <body> tag
+ * 
+ * @param elementId The desired HTML id of the container
+ * @returns A reference to the contaienr
+ */
+export function createContainer(elementId: string) {
+    const htmlBody = document.getElementsByTagName("body")[0];
+    if (isNull(document.getElementById(elementId))) {
+        const container = document.createElement("div");
+        container.setAttribute("id", elementId);
+        return htmlBody.appendChild(container);
+    }
+    
+    const container = document.getElementById(elementId);
+    if (container) {
+        return container;
+    }
+
+    throw new Error(`Couldn't create or find ${elementId}`);
+}
+
+export function getElementById(elementId: string) {
+    const elem = document.getElementById(elementId);
+    if (elem) {
+        return elem;
+    }
+
+    throw new Error(`The element with id "${elementId}" was not found.`);
+}
 
 /**
  * Return a copy of an array with the i-th element removed
