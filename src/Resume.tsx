@@ -712,7 +712,7 @@ class Resume extends React.Component<ResumeProps, ResumeState> {
 
     saveLocal() {
         this.setState({ unsavedChanges: false });
-        localStorage.setItem('experiencer', JSON.stringify(this.dump()));
+        localStorage.setItem('resume', JSON.stringify(this.dump()));
     }
 
     // Save data to an external file

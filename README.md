@@ -2,9 +2,8 @@
 
 **Are you tired of fighting with Microsoft Word? Want the power of HTML and CSS but less of the boilerplate?** Experiencer is an intuitive, flexible HTML & CSS based resume editor written using React supporting rich text, icons, and multiple-column layouts. While it would help to have working knowledge of CSS, the templates and CSS editor make this a great way to sharpen up your CSS skills without racking your brain.
 
-![Experiencer Screenshot](Experiencer-Screenshot.png)
 
-[Example PDF Output](https://github.com/vincentlaucsb/experiencer/blob/master/Example%20PDF.pdf)
+[Example PDF Output](https://github.com/vudung0519/resume)
 
 ## Features
 ### Consistent, Predictable Layouts
@@ -28,13 +27,7 @@ The CSS editor allows you to nest a set of rules within another, therefore givin
  * Autocompletion for CSS property values, including variables you define
  * The ability to set IDs and additional classes for any resume item
 
-## Use It Live
 
-You can use this app live at [http://vincela.com/experiencer](http://vincela.com/experiencer).
-
-## Thanks
- * [Feather Icons](https://feathericons.com/)
- * [IcoFont](https://icofont.com/)
 
 ## Available Scripts
 
@@ -73,32 +66,3 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify

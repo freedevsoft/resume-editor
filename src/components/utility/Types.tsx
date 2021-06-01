@@ -4,7 +4,7 @@
 // imports in this file
 
 export class Globals {
-    static readonly localStorageKey = 'experiencer';
+    static readonly localStorageKey = 'resume';
 }
 
 export type IdType = Array<number>;

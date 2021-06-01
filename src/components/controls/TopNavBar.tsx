@@ -56,7 +56,7 @@ export default function TopNavBar(props: TopNavBarProps) {
                 {modalContent}
             </Modal>
             <div id="brand">
-                <h1 onClick={props.toggleLanding}>Experiencer</h1>
+                <h1 onClick={props.toggleLanding}>Resume</h1>
                 <PureMenu id="top-menu" horizontal>
                     <PureDropdown className="toolbar-dropdown" trigger={<Button>File</Button>}>
                         <IconicItem icon="paper" action={() => props.new()} text="New" />
@@ -70,7 +70,7 @@ export default function TopNavBar(props: TopNavBarProps) {
                         <Button>Help</Button>
                     </Item>
                 </PureMenu>
-                <a href="https://github.com/vincentlaucsb/experiencer">
+                <a href="https://github.com/vudung0519/resume">
                     <img className="github-mark" src={GitHubLight} alt="GitHub" />
                 </a>
             </div>

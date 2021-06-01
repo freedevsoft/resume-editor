@@ -99,7 +99,7 @@ export function assuredHeader() {
             } as BasicIconProps,
             {
                 type: "Rich Text",
-                value: "mynameis@mail.com"
+                value: "Vuvandung0519@outlook.com"
             },
             {
                 type: "Icon",
@@ -122,7 +122,7 @@ export function assuredHeader() {
         childNodes: [
             {
                 type: "Rich Text",
-                value: "My GitHub"
+                value: "Vudung0519"
             },
             {
                 type: "Icon",
@@ -130,7 +130,7 @@ export function assuredHeader() {
             } as BasicIconProps,
             {
                 type: "Rich Text",
-                value: "mylinkedin"
+                value: "Vudung0519"
             },
             {
                 type: "Icon",
@@ -149,7 +149,7 @@ export function assuredHeader() {
 
     return {
         "type": "Header",
-        "value": "<p>Solid <strong>Programmer</strong></p>",
+        "value": "<p>Smart contract <strong>Developer</strong></p>",
         "childNodes": [contact, socialMedia],
         "subtitle": "<p>Software Engineer</p>",
         "justifyContent": "flex-end",
